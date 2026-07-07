@@ -68,7 +68,7 @@ function Home() {
               <div className="absolute inset-x-0 bottom-0 p-5 md:p-8 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
                 <div className="eyebrow text-brand-gold-soft">Recent · Kitchen</div>
                 <div className="heading-display text-2xl md:text-3xl text-brand-ivory mt-1">
-                  Waterfall island · matte cabinetry
+                  Black & gold cove-lit kitchen
                 </div>
               </div>
             </div>
