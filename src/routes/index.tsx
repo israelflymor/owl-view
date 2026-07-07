@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import hero from "@/assets/hero-interior.jpg";
-import projWardrobe from "@/assets/project-wardrobe.jpg";
-import projCurtains from "@/assets/project-curtains.jpg";
-import projLiving from "@/assets/project-living.jpg";
-import projExterior from "@/assets/project-exterior.jpg";
+import hero from "@/assets/real-hero-kitchen.jpg";
+import projWardrobe from "@/assets/real-wardrobe.jpg";
+import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
+import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
+import projExterior from "@/assets/real-exterior.jpg";
+import projBlinds from "@/assets/real-blinds.jpg";
 import { business } from "@/config/business";
 
 export const Route = createFileRoute("/")({
