@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import hero from "@/assets/hero-interior.jpg";
-import projWardrobe from "@/assets/project-wardrobe.jpg";
-import projCurtains from "@/assets/project-curtains.jpg";
-import projLiving from "@/assets/project-living.jpg";
-import projExterior from "@/assets/project-exterior.jpg";
+import hero from "@/assets/real-hero-kitchen.jpg";
+import projWardrobe from "@/assets/real-wardrobe.jpg";
+import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
+import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
+import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
 
 export const Route = createFileRoute("/")({
@@ -60,7 +60,7 @@ function Home() {
             <div className="relative overflow-hidden rounded-2xl border border-border/60 shadow-2xl">
               <img
                 src={hero}
-                alt="Modern luxury kitchen interior with warm cove lighting"
+                alt="Owl View bespoke kitchen with black cabinetry and warm cove lighting"
                 width={1600}
                 height={1100}
                 className="w-full h-auto object-cover"
@@ -68,7 +68,7 @@ function Home() {
               <div className="absolute inset-x-0 bottom-0 p-5 md:p-8 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
                 <div className="eyebrow text-brand-gold-soft">Recent · Kitchen</div>
                 <div className="heading-display text-2xl md:text-3xl text-brand-ivory mt-1">
-                  Waterfall island · matte cabinetry
+                  Black & gold cove-lit kitchen
                 </div>
               </div>
             </div>
@@ -137,9 +137,9 @@ function Home() {
         </h2>
         <div className="mt-10 grid gap-5 md:grid-cols-6">
           {[
-            { src: projWardrobe, title: "Walk-in wardrobe", tag: "Lekki", span: "md:col-span-3" },
-            { src: projLiving, title: "Aubergine lounge", tag: "Ikoyi", span: "md:col-span-3" },
-            { src: projCurtains, title: "Champagne drapery", tag: "Magodo", span: "md:col-span-4" },
+            { src: projWardrobe, title: "Walk-in wardrobe joinery", tag: "Lekki", span: "md:col-span-3" },
+            { src: projKitchenGrey, title: "Graphite & stone kitchen", tag: "Ikoyi", span: "md:col-span-3" },
+            { src: projKitchenWhite, title: "Cove-lit family kitchen", tag: "Magodo", span: "md:col-span-4" },
             { src: projExterior, title: "Construction to finish", tag: "Abeokuta", span: "md:col-span-2" },
           ].map((p) => (
             <figure key={p.title} className={`relative overflow-hidden rounded-2xl ${p.span}`}>
