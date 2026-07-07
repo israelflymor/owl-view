@@ -5,8 +5,6 @@ import projWardrobe from "@/assets/real-wardrobe.jpg";
 import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
 import projExterior from "@/assets/real-exterior.jpg";
-import projBlinds from "@/assets/real-blinds.jpg";
-void projBlinds;
 import { business } from "@/config/business";
 
 export const Route = createFileRoute("/")({
