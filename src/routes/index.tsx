@@ -60,7 +60,7 @@ function Home() {
             <div className="relative overflow-hidden rounded-2xl border border-border/60 shadow-2xl">
               <img
                 src={hero}
-                alt="Modern luxury kitchen interior with warm cove lighting"
+                alt="Owl View bespoke kitchen with black cabinetry and warm cove lighting"
                 width={1600}
                 height={1100}
                 className="w-full h-auto object-cover"
