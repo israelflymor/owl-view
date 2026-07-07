@@ -138,9 +138,9 @@ function Home() {
         </h2>
         <div className="mt-10 grid gap-5 md:grid-cols-6">
           {[
-            { src: projWardrobe, title: "Walk-in wardrobe", tag: "Lekki", span: "md:col-span-3" },
-            { src: projLiving, title: "Aubergine lounge", tag: "Ikoyi", span: "md:col-span-3" },
-            { src: projCurtains, title: "Champagne drapery", tag: "Magodo", span: "md:col-span-4" },
+            { src: projWardrobe, title: "Walk-in wardrobe joinery", tag: "Lekki", span: "md:col-span-3" },
+            { src: projKitchenGrey, title: "Graphite & stone kitchen", tag: "Ikoyi", span: "md:col-span-3" },
+            { src: projKitchenWhite, title: "Cove-lit family kitchen", tag: "Magodo", span: "md:col-span-4" },
             { src: projExterior, title: "Construction to finish", tag: "Abeokuta", span: "md:col-span-2" },
           ].map((p) => (
             <figure key={p.title} className={`relative overflow-hidden rounded-2xl ${p.span}`}>
