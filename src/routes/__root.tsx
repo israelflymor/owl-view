@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Owl View — Interiors, Renovation & Building Maintenance in Lagos" },
+      { title: "Owl View — Bespoke Interiors & Building Maintenance in Lagos & Ogun" },
       {
         name: "description",
         content:
@@ -92,6 +92,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: business.name },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Owl View — Bespoke Interiors & Building Maintenance in Lagos & Ogun" },
+      { name: "twitter:title", content: "Owl View — Bespoke Interiors & Building Maintenance in Lagos & Ogun" },
+      { name: "description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
+      { property: "og:description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
+      { name: "twitter:description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a782eb82-b9ae-457c-9326-3fc9b89bfeac" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a782eb82-b9ae-457c-9326-3fc9b89bfeac" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
