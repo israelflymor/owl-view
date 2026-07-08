@@ -73,6 +73,47 @@ function AboutPage() {
       </section>
 
       <section className="container-page mt-24">
+        <div className="eyebrow">What we do</div>
+        <h2 className="heading-display text-4xl md:text-5xl mt-3 text-primary max-w-3xl">
+          Six service lines, one accountable studio.
+        </h2>
+        <p className="mt-5 text-muted-foreground max-w-2xl leading-relaxed">
+          Owl View is deliberately full-service. Instead of coordinating a designer, a builder,
+          a joiner, a painter and a curtain-maker separately, our clients get one studio, one
+          brief and one team that owns every finish end to end. Below is the full range of work
+          we deliver across Lagos and Ogun State.
+        </p>
+        <div className="mt-10 grid gap-px bg-border rounded-2xl overflow-hidden border border-border">
+          {business.services.map((s, i) => (
+            <article
+              key={s.slug}
+              className="bg-card p-8 md:p-10 grid md:grid-cols-12 gap-6 items-start"
+            >
+              <div className="md:col-span-2">
+                <div className="heading-display text-4xl text-accent">0{i + 1}</div>
+              </div>
+              <div className="md:col-span-7">
+                <h3 className="heading-display text-2xl md:text-3xl text-primary">{s.title}</h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{s.summary}</p>
+                <p className="mt-3 text-sm text-muted-foreground/90 leading-relaxed">
+                  Delivered by our in-house team with a single point of contact, transparent
+                  costing and a schedule you can hold us to.
+                </p>
+              </div>
+              <div className="md:col-span-3 md:text-right">
+                <Link
+                  to="/projects"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/30 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  See {s.title.toLowerCase()}
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="container-page mt-24">
         <div className="eyebrow">How we work</div>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {[
