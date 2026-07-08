@@ -103,10 +103,10 @@ function Home() {
             </h2>
           </div>
           <Link
-            to="/services"
+            to="/projects"
             className="text-sm font-medium text-primary hover:text-accent underline underline-offset-4"
           >
-            All services →
+            All projects →
           </Link>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
