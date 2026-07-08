@@ -5,10 +5,9 @@ import { business } from "@/config/business";
 
 const nav = [
   { to: "/", label: "Home" },
-  { to: "/services", label: "Services" },
-  { to: "/projects", label: "Projects" },
   { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/projects", label: "Projects" },
+  { to: "/gallery", label: "Gallery" },
 ] as const;
 
 export function SiteHeader() {
