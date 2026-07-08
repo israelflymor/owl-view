@@ -30,47 +30,41 @@ function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="container-page pt-10 md:pt-16">
-        <div className="grid gap-10 md:grid-cols-12 md:gap-8 items-end">
-          <div className="md:col-span-6">
-            <div className="eyebrow">Interiors · Renovation · Maintenance</div>
-            <h1 className="heading-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl mt-5 text-primary">
-              Spaces designed for the <em className="text-accent not-italic">wow view</em>.
+      {/* Hero — full-bleed image banner */}
+      <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={hero}
+            alt="Owl View bespoke kitchen with black cabinetry and warm cove lighting"
+            width={1600}
+            height={1100}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/90 via-brand-obsidian/50 to-brand-obsidian/20" />
+        </div>
+
+        <div className="container-page relative z-10 pb-16 md:pb-24 pt-32">
+          <div className="max-w-3xl">
+            <div className="eyebrow text-brand-gold-soft">Interiors · Renovation · Maintenance</div>
+            <h1 className="heading-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl mt-5 text-brand-ivory">
+              Spaces designed for the <em className="text-brand-gold not-italic">wow view</em>.
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
+            <p className="mt-6 text-lg text-brand-ivory/80 max-w-xl leading-relaxed">
               {business.longDescription}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-6 py-3 text-sm font-medium text-brand-obsidian hover:bg-brand-gold-soft"
               >
                 Request a quote <ArrowUpRight size={16} />
               </Link>
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 rounded-full border border-primary/20 px-6 py-3 text-sm font-medium text-primary hover:bg-primary/5"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-ivory/30 px-6 py-3 text-sm font-medium text-brand-ivory hover:bg-brand-ivory/10"
               >
                 View projects
               </Link>
-            </div>
-          </div>
-          <div className="md:col-span-6">
-            <div className="relative overflow-hidden rounded-2xl border border-border/60 shadow-2xl">
-              <img
-                src={hero}
-                alt="Owl View bespoke kitchen with black cabinetry and warm cove lighting"
-                width={1600}
-                height={1100}
-                className="w-full h-auto object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 p-5 md:p-8 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
-                <div className="eyebrow text-brand-gold-soft">Recent · Kitchen</div>
-                <div className="heading-display text-2xl md:text-3xl text-brand-ivory mt-1">
-                  Black & gold cove-lit kitchen
-                </div>
-              </div>
             </div>
           </div>
         </div>
