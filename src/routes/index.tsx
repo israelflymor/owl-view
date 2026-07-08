@@ -1,11 +1,53 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import hero from "@/assets/real-hero-kitchen.jpg";
+import { useEffect, useState } from "react";
+import heroKitchen from "@/assets/real-hero-kitchen.jpg";
+import heroWardrobe from "@/assets/real-wardrobe.jpg";
+import heroKitchenGrey from "@/assets/real-kitchen-grey.jpg";
 import projWardrobe from "@/assets/real-wardrobe.jpg";
 import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
 import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
+
+const heroSlides = [
+  {
+    src: heroKitchen,
+    alt: "Bespoke kitchen with dark cabinetry and warm cove lighting",
+    eyebrow: "Interiors · Renovation · Maintenance",
+    headline: (
+      <>
+        Spaces designed for the <em className="text-brand-gold not-italic">wow view</em>.
+      </>
+    ),
+    description:
+      "One studio for interiors, renovation and building maintenance across Lagos & Ogun — design, build and finish, in-house.",
+  },
+  {
+    src: heroWardrobe,
+    alt: "Custom walk-in wardrobe joinery with warm timber finish",
+    eyebrow: "Joinery · Wardrobes · Storage",
+    headline: (
+      <>
+        Bespoke joinery, <em className="text-brand-gold not-italic">measured</em> to your rooms.
+      </>
+    ),
+    description:
+      "Walk-in wardrobes, TV units and fitted storage — crafted in our workshop, installed clean.",
+  },
+  {
+    src: heroKitchenGrey,
+    alt: "Graphite and stone kitchen with island seating",
+    eyebrow: "Kitchens · Stone · Cabinetry",
+    headline: (
+      <>
+        Kitchens with a <em className="text-brand-gold not-italic">quiet</em> confidence.
+      </>
+    ),
+    description:
+      "From layout to lighting, stone tops to soft-close doors — kitchens that work as beautifully as they look.",
+  },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,51 +69,97 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const featured = business.services.slice(0, 6);
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 6000);
+    return () => clearInterval(id);
+  }, []);
+
+  const current = heroSlides[slide];
 
   return (
     <>
-      {/* Hero — full-bleed image banner */}
-      <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden">
+      {/* Hero — full-bleed slider banner */}
+      <section className="relative min-h-[560px] h-[calc(100svh-4rem)] md:h-[calc(100vh-5rem)] md:min-h-[640px] lg:min-h-[720px] max-h-[900px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={hero}
-            alt="Owl View bespoke kitchen with black cabinetry and warm cove lighting"
-            width={1600}
-            height={1100}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/90 via-brand-obsidian/50 to-brand-obsidian/20" />
+          {heroSlides.map((s, i) => (
+            <img
+              key={s.src}
+              src={s.src}
+              alt={s.alt}
+              width={1600}
+              height={1100}
+              loading={i === 0 ? "eager" : "lazy"}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out ${
+                i === slide ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/95 via-brand-obsidian/60 to-brand-obsidian/25" />
         </div>
 
-        <div className="container-page relative z-10 pb-16 md:pb-24 pt-32">
+        <div className="container-page relative z-10 pb-12 sm:pb-16 md:pb-20 pt-24 sm:pt-28 md:pt-32 w-full">
           <div className="max-w-3xl">
-            <div className="eyebrow text-brand-gold-soft">Interiors · Renovation · Maintenance</div>
-            <h1 className="heading-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl mt-5 text-brand-ivory">
-              Spaces designed for the <em className="text-brand-gold not-italic">wow view</em>.
+            <div key={`eb-${slide}`} className="eyebrow text-brand-gold-soft animate-in fade-in slide-in-from-bottom-2 duration-700">
+              {current.eyebrow}
+            </div>
+            <h1
+              key={`h-${slide}`}
+              className="heading-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mt-4 sm:mt-5 text-brand-ivory leading-[1.05] animate-in fade-in slide-in-from-bottom-3 duration-700"
+            >
+              {current.headline}
             </h1>
-            <p className="mt-6 text-lg text-brand-ivory/80 max-w-xl leading-relaxed">
-              {business.longDescription}
+            <p
+              key={`p-${slide}`}
+              className="mt-5 sm:mt-6 text-base sm:text-lg text-brand-ivory/85 max-w-xl leading-relaxed animate-in fade-in duration-1000"
+            >
+              {current.description}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 sm:mt-8 flex flex-wrap gap-3">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-6 py-3 text-sm font-medium text-brand-obsidian hover:bg-brand-gold-soft"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-6 py-3 text-sm font-medium text-brand-obsidian hover:bg-brand-gold-soft transition-colors"
               >
                 Request a quote <ArrowUpRight size={16} />
               </Link>
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 rounded-full border border-brand-ivory/30 px-6 py-3 text-sm font-medium text-brand-ivory hover:bg-brand-ivory/10"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-ivory/40 px-6 py-3 text-sm font-medium text-brand-ivory hover:bg-brand-ivory/10 transition-colors"
               >
                 View projects
               </Link>
+              <Link
+                to="/gallery"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-brand-ivory/80 hover:text-brand-ivory transition-colors"
+              >
+                Browse gallery →
+              </Link>
+            </div>
+
+            {/* Slide indicators */}
+            <div className="mt-10 sm:mt-12 flex items-center gap-3" role="tablist" aria-label="Hero slides">
+              {heroSlides.map((s, i) => (
+                <button
+                  key={s.src}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === slide}
+                  aria-label={`Show slide ${i + 1}`}
+                  onClick={() => setSlide(i)}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i === slide ? "w-10 bg-brand-gold" : "w-6 bg-brand-ivory/30 hover:bg-brand-ivory/50"
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats / proof strip */}
-      <section className="container-page mt-20">
+      <section className="container-page mt-16 md:mt-24">
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-6 border-y border-border py-10">
           {[
             { k: "80+", v: "Homes finished" },
