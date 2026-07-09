@@ -50,7 +50,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Coastal-luxury interiors and renovation across Lagos & Ogun State." },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: "/" },
+      { rel: "preload", as: "image", href: heroLiving, fetchpriority: "high" },
+    ],
+
   }),
   component: Home,
 });
