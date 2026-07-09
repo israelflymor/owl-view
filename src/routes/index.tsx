@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { useEffect, useState, type KeyboardEvent } from "react";
-import heroKitchen from "@/assets/real-hero-kitchen.jpg";
-import heroWardrobe from "@/assets/real-wardrobe.jpg";
-import heroKitchenGrey from "@/assets/real-kitchen-grey.jpg";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import heroLiving from "@/assets/hero-slide-1.jpg";
+import heroKitchenLux from "@/assets/hero-slide-2.jpg";
 import projWardrobe from "@/assets/real-wardrobe.jpg";
 import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
@@ -12,8 +11,8 @@ import { business } from "@/config/business";
 
 const heroSlides = [
   {
-    src: heroKitchen,
-    alt: "Bespoke kitchen with dark cabinetry and warm cove lighting",
+    src: heroLiving,
+    alt: "Lagoon-view living room with bouclé sofas and travertine table at golden hour",
     eyebrow: "Interiors · Renovation · Maintenance",
     headline: (
       <>
@@ -24,20 +23,8 @@ const heroSlides = [
       "One studio for interiors, renovation and building maintenance across Lagos & Ogun — design, build and finish, in-house.",
   },
   {
-    src: heroWardrobe,
-    alt: "Custom walk-in wardrobe joinery with warm timber finish",
-    eyebrow: "Joinery · Wardrobes · Storage",
-    headline: (
-      <>
-        Bespoke joinery, <em className="text-brand-gold not-italic">measured</em> to your rooms.
-      </>
-    ),
-    description:
-      "Walk-in wardrobes, TV units and fitted storage — crafted in our workshop, installed clean.",
-  },
-  {
-    src: heroKitchenGrey,
-    alt: "Graphite and stone kitchen with island seating",
+    src: heroKitchenLux,
+    alt: "Bespoke walnut and Calacatta marble kitchen with brass tap and warm cove lighting",
     eyebrow: "Kitchens · Stone · Cabinetry",
     headline: (
       <>
@@ -48,6 +35,7 @@ const heroSlides = [
       "From layout to lighting, stone tops to soft-close doors — kitchens that work as beautifully as they look.",
   },
 ];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
