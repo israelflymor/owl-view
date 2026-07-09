@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import heroKitchen from "@/assets/real-hero-kitchen.jpg";
 import heroWardrobe from "@/assets/real-wardrobe.jpg";
 import heroKitchenGrey from "@/assets/real-kitchen-grey.jpg";
