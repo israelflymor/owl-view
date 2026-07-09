@@ -63,6 +63,8 @@ function Home() {
   const featured = business.services.slice(0, 6);
   const [slide, setSlide] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     if (paused) return;
@@ -72,6 +74,16 @@ function Home() {
     return () => clearInterval(id);
   }, [paused]);
 
+  // Prefetch the next slide's image right after mount so autoplay never blocks on network.
+  useEffect(() => {
+    const next = (slide + 1) % heroSlides.length;
+    if (loaded.has(next)) return;
+    const img = new Image();
+    img.decoding = "async";
+    img.src = heroSlides[next].src;
+    img.onload = () => setLoaded((prev) => (prev.has(next) ? prev : new Set(prev).add(next)));
+  }, [slide, loaded]);
+
   const goTo = (i: number) => setSlide((i + heroSlides.length) % heroSlides.length);
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "ArrowLeft") { e.preventDefault(); goTo(slide - 1); }
@@ -80,6 +92,19 @@ function Home() {
     else if (e.key === "End") { e.preventDefault(); goTo(heroSlides.length - 1); }
   };
 
+  const onPointerDown = (e: PointerEvent) => {
+    if (e.pointerType !== "touch") return;
+    touchStart.current = { x: e.clientX, y: e.clientY };
+  };
+  const onPointerEnd = (e: PointerEvent) => {
+    if (e.pointerType !== "touch" || !touchStart.current) return;
+    const dx = e.clientX - touchStart.current.x;
+    const dy = e.clientY - touchStart.current.y;
+    touchStart.current = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      goTo(slide + (dx < 0 ? 1 : -1));
+    }
+  };
 
   const current = heroSlides[slide];
 
@@ -94,30 +119,42 @@ function Home() {
         onMouseLeave={() => setPaused(false)}
         onFocus={() => setPaused(true)}
         onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(false); }}
-        className="relative min-h-[560px] h-[calc(100svh-4rem)] md:h-[calc(100vh-5rem)] md:min-h-[640px] lg:min-h-[720px] max-h-[900px] flex items-end overflow-hidden focus-within:outline-none"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={() => { touchStart.current = null; }}
+        className="relative min-h-[560px] h-[calc(100svh-4rem)] md:h-[calc(100vh-5rem)] md:min-h-[640px] lg:min-h-[720px] max-h-[900px] flex items-end overflow-hidden focus-within:outline-none touch-pan-y select-none"
       >
         <div className="absolute inset-0" aria-live="polite" aria-atomic="true">
-          {heroSlides.map((s, i) => (
-            <div
-              key={s.src}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${heroSlides.length}: ${s.alt}`}
-              aria-hidden={i !== slide}
-              className={`absolute inset-0 transition-opacity duration-[1200ms] ease-out motion-reduce:transition-none ${
-                i === slide ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <img
-                src={s.src}
-                alt={i === slide ? s.alt : ""}
-                width={1600}
-                height={1100}
-                loading={i === 0 ? "eager" : "lazy"}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            </div>
-          ))}
+          {heroSlides.map((s, i) => {
+            const shouldLoad = i === 0 || loaded.has(i) || i === slide;
+            return (
+              <div
+                key={s.src}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${i + 1} of ${heroSlides.length}: ${s.alt}`}
+                aria-hidden={i !== slide}
+                className={`absolute inset-0 transition-opacity duration-[1200ms] ease-out motion-reduce:transition-none ${
+                  i === slide ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {shouldLoad ? (
+                  <img
+                    src={s.src}
+                    alt={i === slide ? s.alt : ""}
+                    width={1920}
+                    height={1280}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchPriority={i === 0 ? "high" : "low"}
+                    decoding="async"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : null}
+              </div>
+            );
+          })}
+
           <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/95 via-brand-obsidian/60 to-brand-obsidian/25" />
         </div>
 
