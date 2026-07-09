@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import heroKitchen from "@/assets/real-hero-kitchen.jpg";
 import heroWardrobe from "@/assets/real-wardrobe.jpg";
 import heroKitchenGrey from "@/assets/real-kitchen-grey.jpg";
@@ -70,92 +70,153 @@ export const Route = createFileRoute("/")({
 function Home() {
   const featured = business.services.slice(0, 6);
   const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
+    if (paused) return;
+    const mq = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+    if (mq?.matches) return;
     const id = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 6000);
     return () => clearInterval(id);
-  }, []);
+  }, [paused]);
+
+  const goTo = (i: number) => setSlide((i + heroSlides.length) % heroSlides.length);
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "ArrowLeft") { e.preventDefault(); goTo(slide - 1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); goTo(slide + 1); }
+    else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End") { e.preventDefault(); goTo(heroSlides.length - 1); }
+  };
+
 
   const current = heroSlides[slide];
 
   return (
     <>
       {/* Hero — full-bleed slider banner */}
-      <section className="relative min-h-[560px] h-[calc(100svh-4rem)] md:h-[calc(100vh-5rem)] md:min-h-[640px] lg:min-h-[720px] max-h-[900px] flex items-end overflow-hidden">
-        <div className="absolute inset-0">
+      <section
+        aria-roledescription="carousel"
+        aria-label="Featured projects"
+        onKeyDown={onKeyDown}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(false); }}
+        className="relative min-h-[560px] h-[calc(100svh-4rem)] md:h-[calc(100vh-5rem)] md:min-h-[640px] lg:min-h-[720px] max-h-[900px] flex items-end overflow-hidden focus-within:outline-none"
+      >
+        <div className="absolute inset-0" aria-live="polite" aria-atomic="true">
           {heroSlides.map((s, i) => (
-            <img
+            <div
               key={s.src}
-              src={s.src}
-              alt={s.alt}
-              width={1600}
-              height={1100}
-              loading={i === 0 ? "eager" : "lazy"}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out ${
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${heroSlides.length}: ${s.alt}`}
+              aria-hidden={i !== slide}
+              className={`absolute inset-0 transition-opacity duration-[1200ms] ease-out motion-reduce:transition-none ${
                 i === slide ? "opacity-100" : "opacity-0"
               }`}
-            />
+            >
+              <img
+                src={s.src}
+                alt={i === slide ? s.alt : ""}
+                width={1600}
+                height={1100}
+                loading={i === 0 ? "eager" : "lazy"}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/95 via-brand-obsidian/60 to-brand-obsidian/25" />
         </div>
 
         <div className="container-page relative z-10 pb-12 sm:pb-16 md:pb-20 pt-24 sm:pt-28 md:pt-32 w-full">
           <div className="max-w-3xl">
-            <div key={`eb-${slide}`} className="eyebrow text-brand-gold-soft animate-in fade-in slide-in-from-bottom-2 duration-700">
+            <div key={`eb-${slide}`} className="eyebrow text-brand-gold-soft animate-in fade-in slide-in-from-bottom-2 duration-700 motion-reduce:animate-none">
               {current.eyebrow}
             </div>
             <h1
               key={`h-${slide}`}
-              className="heading-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mt-4 sm:mt-5 text-brand-ivory leading-[1.05] animate-in fade-in slide-in-from-bottom-3 duration-700"
+              className="heading-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mt-4 sm:mt-5 text-brand-ivory leading-[1.05] animate-in fade-in slide-in-from-bottom-3 duration-700 motion-reduce:animate-none"
             >
               {current.headline}
             </h1>
             <p
               key={`p-${slide}`}
-              className="mt-5 sm:mt-6 text-base sm:text-lg text-brand-ivory/85 max-w-xl leading-relaxed animate-in fade-in duration-1000"
+              className="mt-5 sm:mt-6 text-base sm:text-lg text-brand-ivory/85 max-w-xl leading-relaxed animate-in fade-in duration-1000 motion-reduce:animate-none"
             >
               {current.description}
             </p>
             <div className="mt-7 sm:mt-8 flex flex-wrap gap-3">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-6 py-3 text-sm font-medium text-brand-obsidian hover:bg-brand-gold-soft transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-6 py-3 text-sm font-medium text-brand-obsidian hover:bg-brand-gold-soft transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
               >
-                Request a quote <ArrowUpRight size={16} />
+                Request a quote <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 rounded-full border border-brand-ivory/40 px-6 py-3 text-sm font-medium text-brand-ivory hover:bg-brand-ivory/10 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-ivory/40 px-6 py-3 text-sm font-medium text-brand-ivory hover:bg-brand-ivory/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-ivory focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
               >
                 View projects
               </Link>
               <Link
                 to="/gallery"
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-brand-ivory/80 hover:text-brand-ivory transition-colors"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-brand-ivory/80 hover:text-brand-ivory transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-ivory focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
               >
                 Browse gallery →
               </Link>
             </div>
 
-            {/* Slide indicators */}
-            <div className="mt-10 sm:mt-12 flex items-center gap-3" role="tablist" aria-label="Hero slides">
-              {heroSlides.map((s, i) => (
+            {/* Slider controls */}
+            <div className="mt-10 sm:mt-12 flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 <button
-                  key={s.src}
                   type="button"
-                  role="tab"
-                  aria-selected={i === slide}
-                  aria-label={`Show slide ${i + 1}`}
-                  onClick={() => setSlide(i)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === slide ? "w-10 bg-brand-gold" : "w-6 bg-brand-ivory/30 hover:bg-brand-ivory/50"
-                  }`}
-                />
-              ))}
+                  onClick={() => goTo(slide - 1)}
+                  aria-label="Previous slide"
+                  className="grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 text-brand-ivory hover:bg-brand-ivory/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                >
+                  <ChevronLeft size={18} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(slide + 1)}
+                  aria-label="Next slide"
+                  className="grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 text-brand-ivory hover:bg-brand-ivory/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                >
+                  <ChevronRight size={18} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaused((p) => !p)}
+                  aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+                  aria-pressed={paused}
+                  className="grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 text-brand-ivory hover:bg-brand-ivory/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                >
+                  {paused ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
+                </button>
+              </div>
+              <div role="tablist" aria-label="Choose slide" className="flex items-center gap-3">
+                {heroSlides.map((s, i) => (
+                  <button
+                    key={s.src}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === slide}
+                    aria-label={`Show slide ${i + 1} of ${heroSlides.length}`}
+                    onClick={() => goTo(i)}
+                    className={`h-1.5 rounded-full transition-all duration-500 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian ${
+                      i === slide ? "w-10 bg-brand-gold" : "w-6 bg-brand-ivory/30 hover:bg-brand-ivory/50"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
+            <span className="sr-only" aria-live="polite">Slide {slide + 1} of {heroSlides.length}</span>
           </div>
         </div>
       </section>
+
 
       {/* Stats / proof strip */}
       <section className="container-page mt-16 md:mt-24">
