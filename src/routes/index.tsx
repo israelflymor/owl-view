@@ -81,7 +81,7 @@ function Home() {
   }, [paused]);
 
   const goTo = (i: number) => setSlide((i + heroSlides.length) % heroSlides.length);
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "ArrowLeft") { e.preventDefault(); goTo(slide - 1); }
     else if (e.key === "ArrowRight") { e.preventDefault(); goTo(slide + 1); }
     else if (e.key === "Home") { e.preventDefault(); goTo(0); }
