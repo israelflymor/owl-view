@@ -70,11 +70,24 @@ export const Route = createFileRoute("/")({
 function Home() {
   const featured = business.services.slice(0, 6);
   const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
+    if (paused) return;
+    const mq = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+    if (mq?.matches) return;
     const id = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 6000);
     return () => clearInterval(id);
-  }, []);
+  }, [paused]);
+
+  const goTo = (i: number) => setSlide((i + heroSlides.length) % heroSlides.length);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") { e.preventDefault(); goTo(slide - 1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); goTo(slide + 1); }
+    else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End") { e.preventDefault(); goTo(heroSlides.length - 1); }
+  };
+
 
   const current = heroSlides[slide];
 
