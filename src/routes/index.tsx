@@ -73,8 +73,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const featured = business.services.slice(0, 6);
   const [slide, setSlide] = useState(0);
+
   const [paused, setPaused] = useState(false);
   const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
   const touchStart = useRef<{ x: number; y: number } | null>(null);
