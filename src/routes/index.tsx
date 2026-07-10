@@ -73,8 +73,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const featured = business.services.slice(0, 6);
   const [slide, setSlide] = useState(0);
+
   const [paused, setPaused] = useState(false);
   const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -284,11 +284,11 @@ function Home() {
         </div>
       </section>
 
-      {/* Services grid */}
+      {/* What we do × Selected work — merged showcase */}
       <section className="container-page mt-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <div className="eyebrow">What we do</div>
+            <div className="eyebrow">What we do · Selected work</div>
             <h2 className="heading-display text-4xl md:text-5xl mt-3 text-primary max-w-2xl">
               One studio for design, build and everything after.
             </h2>
@@ -301,24 +301,64 @@ function Home() {
           </Link>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((s, i) => (
-            <div
-              key={s.slug}
-              className="group rounded-2xl border border-border bg-card p-6 md:p-7 hover:border-accent/60 transition-colors"
+          {[
+            {
+              service: business.services.find((s) => s.slug === "kitchens-wardrobes")!,
+              image: projKitchenGrey,
+              tag: "Ikoyi",
+              projectTitle: "Graphite & stone kitchen",
+            },
+            {
+              service: business.services.find((s) => s.slug === "interior-design")!,
+              image: projWardrobe,
+              tag: "Lekki",
+              projectTitle: "Walk-in wardrobe joinery",
+            },
+            {
+              service: business.services.find((s) => s.slug === "construction-maintenance")!,
+              image: projExterior,
+              tag: "Abeokuta",
+              projectTitle: "Construction to finish",
+            },
+          ].map((item, i) => (
+            <Link
+              key={item.service.slug}
+              to="/projects"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              <div className="flex items-baseline justify-between">
-                <span className="eyebrow">0{i + 1}</span>
-                <ArrowUpRight
-                  size={18}
-                  className="text-muted-foreground group-hover:text-accent transition-colors"
+              <figure className="relative overflow-hidden aspect-[4/3]">
+                <img
+                  src={item.image}
+                  alt={`${item.projectTitle} — ${item.tag}`}
+                  loading="lazy"
+                  width={1200}
+                  height={900}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+                <figcaption className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
+                  <div className="eyebrow text-brand-gold-soft">{item.tag}</div>
+                  <div className="text-sm text-brand-ivory/90 mt-0.5">{item.projectTitle}</div>
+                </figcaption>
+              </figure>
+              <div className="p-6 md:p-7 flex flex-col flex-1">
+                <div className="flex items-baseline justify-between">
+                  <span className="eyebrow">0{i + 1}</span>
+                  <ArrowUpRight
+                    size={18}
+                    className="text-muted-foreground group-hover:text-accent transition-colors"
+                  />
+                </div>
+                <h3 className="heading-display text-2xl mt-5 text-primary">{item.service.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.service.summary}</p>
+                <span className="mt-5 text-sm font-medium text-primary group-hover:text-accent transition-colors">
+                  See project →
+                </span>
               </div>
-              <h3 className="heading-display text-2xl mt-6 text-primary">{s.title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.summary}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
+
 
       {/* Portfolio preview */}
       <section className="container-page mt-24">
