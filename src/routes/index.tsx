@@ -65,7 +65,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "/" },
-      { rel: "preload", as: "image", href: heroLiving, imagesrcset: heroLivingAvif, imagesizes: "100vw", type: "image/avif", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroLiving, imageSrcSet: heroLivingAvif, imageSizes: "100vw", type: "image/avif", fetchPriority: "high" },
     ],
 
   }),
