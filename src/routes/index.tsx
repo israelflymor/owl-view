@@ -152,17 +152,23 @@ function Home() {
                 }`}
               >
                 {shouldLoad ? (
-                  <img
-                    src={s.src}
-                    alt={i === slide ? s.alt : ""}
-                    width={1920}
-                    height={1280}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    fetchPriority={i === 0 ? "high" : "low"}
-                    decoding="async"
-                    draggable={false}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                  <picture>
+                    <source type="image/avif" srcSet={s.avif} sizes="100vw" />
+                    <source type="image/webp" srcSet={s.webp} sizes="100vw" />
+                    <img
+                      src={s.src}
+                      srcSet={s.jpg}
+                      sizes="100vw"
+                      alt={i === slide ? s.alt : ""}
+                      width={1920}
+                      height={1280}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === slide ? "high" : "low"}
+                      decoding={i === slide ? "sync" : "async"}
+                      draggable={false}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </picture>
                 ) : null}
               </div>
             );
