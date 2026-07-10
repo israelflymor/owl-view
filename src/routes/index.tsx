@@ -2,7 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import heroLiving from "@/assets/hero-slide-1.jpg";
+import heroLivingAvif from "@/assets/hero-slide-1.jpg?w=640;960;1280;1600;1920&format=avif&as=srcset";
+import heroLivingWebp from "@/assets/hero-slide-1.jpg?w=640;960;1280;1600;1920&format=webp&as=srcset";
+import heroLivingJpg from "@/assets/hero-slide-1.jpg?w=640;960;1280;1600;1920&format=jpg&as=srcset";
 import heroKitchenLux from "@/assets/hero-slide-2.jpg";
+import heroKitchenAvif from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=avif&as=srcset";
+import heroKitchenWebp from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=webp&as=srcset";
+import heroKitchenJpg from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=jpg&as=srcset";
 import projWardrobe from "@/assets/real-wardrobe.jpg";
 import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
@@ -12,6 +18,9 @@ import { business } from "@/config/business";
 const heroSlides = [
   {
     src: heroLiving,
+    avif: heroLivingAvif,
+    webp: heroLivingWebp,
+    jpg: heroLivingJpg,
     alt: "Lagoon-view living room with bouclé sofas and travertine table at golden hour",
     eyebrow: "Interiors · Renovation · Maintenance",
     headline: (
@@ -24,6 +33,9 @@ const heroSlides = [
   },
   {
     src: heroKitchenLux,
+    avif: heroKitchenAvif,
+    webp: heroKitchenWebp,
+    jpg: heroKitchenJpg,
     alt: "Bespoke walnut and Calacatta marble kitchen with brass tap and warm cove lighting",
     eyebrow: "Kitchens · Stone · Cabinetry",
     headline: (
@@ -35,6 +47,7 @@ const heroSlides = [
       "From layout to lighting, stone tops to soft-close doors — kitchens that work as beautifully as they look.",
   },
 ];
+
 
 
 export const Route = createFileRoute("/")({
@@ -52,7 +65,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "/" },
-      { rel: "preload", as: "image", href: heroLiving, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroLiving, imageSrcSet: heroLivingAvif, imageSizes: "100vw", type: "image/avif", fetchPriority: "high" },
     ],
 
   }),
@@ -139,17 +152,23 @@ function Home() {
                 }`}
               >
                 {shouldLoad ? (
-                  <img
-                    src={s.src}
-                    alt={i === slide ? s.alt : ""}
-                    width={1920}
-                    height={1280}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    fetchPriority={i === 0 ? "high" : "low"}
-                    decoding="async"
-                    draggable={false}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                  <picture>
+                    <source type="image/avif" srcSet={s.avif} sizes="100vw" />
+                    <source type="image/webp" srcSet={s.webp} sizes="100vw" />
+                    <img
+                      src={s.src}
+                      srcSet={s.jpg}
+                      sizes="100vw"
+                      alt={i === slide ? s.alt : ""}
+                      width={1920}
+                      height={1280}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === slide ? "high" : "low"}
+                      decoding={i === slide ? "sync" : "async"}
+                      draggable={false}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </picture>
                 ) : null}
               </div>
             );
