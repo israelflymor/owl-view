@@ -18,6 +18,9 @@ import { business } from "@/config/business";
 const heroSlides = [
   {
     src: heroLiving,
+    avif: heroLivingAvif,
+    webp: heroLivingWebp,
+    jpg: heroLivingJpg,
     alt: "Lagoon-view living room with bouclé sofas and travertine table at golden hour",
     eyebrow: "Interiors · Renovation · Maintenance",
     headline: (
@@ -30,6 +33,9 @@ const heroSlides = [
   },
   {
     src: heroKitchenLux,
+    avif: heroKitchenAvif,
+    webp: heroKitchenWebp,
+    jpg: heroKitchenJpg,
     alt: "Bespoke walnut and Calacatta marble kitchen with brass tap and warm cove lighting",
     eyebrow: "Kitchens · Stone · Cabinetry",
     headline: (
@@ -41,6 +47,7 @@ const heroSlides = [
       "From layout to lighting, stone tops to soft-close doors — kitchens that work as beautifully as they look.",
   },
 ];
+
 
 
 export const Route = createFileRoute("/")({
