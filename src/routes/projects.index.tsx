@@ -21,7 +21,7 @@ const extraImageBySlug: Record<string, string> = {
   "curtains-blinds": blinds,
 };
 
-export const Route = createFileRoute("/projects")({
+export const Route = createFileRoute("/projects/")({
   head: () => ({
     meta: [
       { title: "Projects — Owl View Service Lines" },
