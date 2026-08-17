@@ -14,6 +14,8 @@ import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
 import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
+import { projects, cardSizes } from "@/config/projects";
+
 
 const heroSlides = [
   {
