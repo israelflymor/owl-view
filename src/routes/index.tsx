@@ -14,6 +14,8 @@ import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
 import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
 import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
+import { projects, cardSizes } from "@/config/projects";
+
 
 const heroSlides = [
   {
@@ -301,43 +303,34 @@ function Home() {
           </Link>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              service: business.services.find((s) => s.slug === "kitchens-wardrobes")!,
-              image: projKitchenGrey,
-              tag: "Ikoyi",
-              projectTitle: "Graphite & stone kitchen",
-            },
-            {
-              service: business.services.find((s) => s.slug === "interior-design")!,
-              image: projWardrobe,
-              tag: "Lekki",
-              projectTitle: "Walk-in wardrobe joinery",
-            },
-            {
-              service: business.services.find((s) => s.slug === "construction-maintenance")!,
-              image: projExterior,
-              tag: "Abeokuta",
-              projectTitle: "Construction to finish",
-            },
-          ].map((item, i) => (
+          {projects.map((item, i) => (
             <Link
-              key={item.service.slug}
-              to="/projects"
+              key={item.slug}
+              to="/projects/$slug"
+              params={{ slug: item.slug }}
+              aria-label={`View project: ${item.title}, ${item.location}`}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <figure className="relative overflow-hidden aspect-[4/3]">
-                <img
-                  src={item.image}
-                  alt={`${item.projectTitle} — ${item.tag}`}
-                  loading="lazy"
-                  width={1200}
-                  height={900}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                <picture>
+                  <source type="image/avif" srcSet={item.image.avif} sizes={cardSizes} />
+                  <source type="image/webp" srcSet={item.image.webp} sizes={cardSizes} />
+                  <img
+                    src={item.image.src}
+                    srcSet={item.image.jpg}
+                    sizes={cardSizes}
+                    alt={item.image.alt}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchPriority={i === 0 ? "high" : "low"}
+                    decoding={i === 0 ? "sync" : "async"}
+                    width={1200}
+                    height={900}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </picture>
                 <figcaption className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
-                  <div className="eyebrow text-brand-gold-soft">{item.tag}</div>
-                  <div className="text-sm text-brand-ivory/90 mt-0.5">{item.projectTitle}</div>
+                  <div className="eyebrow text-brand-gold-soft">{item.location}</div>
+                  <div className="text-sm text-brand-ivory/90 mt-0.5">{item.title}</div>
                 </figcaption>
               </figure>
               <div className="p-6 md:p-7 flex flex-col flex-1">
@@ -348,15 +341,16 @@ function Home() {
                     className="text-muted-foreground group-hover:text-accent transition-colors"
                   />
                 </div>
-                <h3 className="heading-display text-2xl mt-5 text-primary">{item.service.title}</h3>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.service.summary}</p>
+                <h3 className="heading-display text-2xl mt-5 text-primary">{item.serviceTitle}</h3>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.cardSummary}</p>
                 <span className="mt-5 text-sm font-medium text-primary group-hover:text-accent transition-colors">
-                  See project →
+                  View project →
                 </span>
               </div>
             </Link>
           ))}
         </div>
+
       </section>
 
 
