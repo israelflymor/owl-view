@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { business } from "@/config/business";
+import { projectByServiceSlug } from "@/config/projects";
 import kitchenHero from "@/assets/real-hero-kitchen.jpg";
 import kitchenWhite from "@/assets/real-kitchen-white.jpg";
 import kitchenGrey from "@/assets/real-kitchen-grey.jpg";
@@ -69,7 +70,9 @@ function ProjectsPage() {
 
       <section className="container-page mt-14 md:mt-20">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {business.services.map((s, i) => (
+          {business.services.map((s, i) => {
+            const featured = projectByServiceSlug(s.slug);
+            return (
             <article
               key={s.slug}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors"
@@ -102,15 +105,27 @@ function ProjectsPage() {
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">
                   {s.summary}
                 </p>
-                <Link
-                  to="/contact"
-                  className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-primary/30 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  Enquire about {s.title.toLowerCase()}
-                </Link>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {featured && (
+                    <Link
+                      to="/projects/$slug"
+                      params={{ slug: featured.slug }}
+                      className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                    >
+                      View project
+                    </Link>
+                  )}
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 rounded-full border border-primary/30 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                  >
+                    Enquire about {s.title.toLowerCase()}
+                  </Link>
+                </div>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 
