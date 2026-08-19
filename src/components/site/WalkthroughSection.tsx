@@ -65,6 +65,8 @@ export function WalkthroughSection() {
                 loop
                 playsInline
                 preload="none"
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
                 controls={false}
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
                 className="absolute inset-0 h-full w-full object-cover"
