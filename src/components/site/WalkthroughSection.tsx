@@ -27,20 +27,17 @@ export function WalkthroughSection() {
   // Slow, cinematic pace; pause when scrolled away or reduced motion is preferred.
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || !inView) return;
+    if (!v) return;
+    if (!inView) {
+      if (!v.paused) v.pause();
+      return;
+    }
     v.playbackRate = 0.6;
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
-    v.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
-  }, [inView]);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v || inView || v.paused) return;
-    v.pause();
-    setPlaying(false);
+    v.play().catch(() => undefined);
   }, [inView]);
 
   const toggle = () => {
@@ -48,10 +45,9 @@ export function WalkthroughSection() {
     if (!v) return;
     if (v.paused) {
       v.playbackRate = 0.6;
-      v.play().then(() => setPlaying(true)).catch(() => undefined);
+      v.play().catch(() => undefined);
     } else {
       v.pause();
-      setPlaying(false);
     }
   };
 
