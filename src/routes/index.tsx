@@ -355,6 +355,9 @@ function Home() {
       </section>
 
 
+      {/* Walkthrough video */}
+      <WalkthroughSection />
+
       {/* Portfolio preview */}
       <section className="container-page mt-24">
         <div className="eyebrow">Selected work</div>
