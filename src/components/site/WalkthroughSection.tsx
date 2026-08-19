@@ -71,7 +71,12 @@ export function WalkthroughSection() {
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
                 className="absolute inset-0 h-full w-full object-cover"
               >
-                {inView ? <source src={walkthroughAsset.url} type="video/mp4" /> : null}
+                {inView ? (
+                  <>
+                    <source src={walkthroughWebm.url} type="video/webm" />
+                    <source src={walkthroughAsset.url} type="video/mp4" />
+                  </>
+                ) : null}
               </video>
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-brand-obsidian/80 to-transparent"
