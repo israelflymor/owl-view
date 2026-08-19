@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
 import walkthroughAsset from "@/assets/walkthrough.mp4.asset.json";
+import walkthroughWebm from "@/assets/walkthrough.webm.asset.json";
 import posterAsset from "@/assets/walkthrough-poster.jpg.asset.json";
 
 const SPACES = ["Living room", "Dining", "Kitchen", "Cinema room", "Bedrooms", "Home gym"];
