@@ -393,8 +393,8 @@ function Home() {
       <section className="container-page mt-24">
         <div className="eyebrow">Client words</div>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {business.testimonials.map((t) => (
-            <blockquote key={t.author} className="rounded-2xl border border-border bg-card p-7">
+          {business.testimonials.map((t, i) => (
+            <blockquote key={`${t.author}-${i}`} className="rounded-2xl border border-border bg-card p-7">
               <p className="heading-display text-2xl text-primary leading-snug">"{t.quote}"</p>
               <footer className="mt-6 text-sm text-muted-foreground">
                 <div className="font-medium text-foreground">{t.author}</div>
