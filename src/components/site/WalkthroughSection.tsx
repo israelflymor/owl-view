@@ -81,12 +81,22 @@ export function WalkthroughSection() {
     return () => v.removeEventListener("loadedmetadata", apply);
   }, [deepLinkTime, reducedMotion, inView, startSlowPlay]);
 
-  // Pause when scrolled away. Reduced motion never autoplays.
+  // Attach + play sources only once the section scrolls near the viewport.
+  const loadedRef = useRef(false);
   useEffect(() => {
     const v = videoRef.current;
     if (!v || reducedMotion) return;
-    if (!inView && !v.paused) v.pause();
-  }, [inView, reducedMotion]);
+    if (!inView) {
+      if (!v.paused) v.pause();
+      return;
+    }
+    if (!loadedRef.current) {
+      loadedRef.current = true;
+      v.load();
+    }
+    startSlowPlay();
+  }, [inView, reducedMotion, startSlowPlay]);
+
 
   const toggle = () => {
     const v = videoRef.current;
