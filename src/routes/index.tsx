@@ -210,12 +210,6 @@ function Home() {
               >
                 View projects
               </Link>
-              <Link
-                to="/gallery"
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-brand-ivory/80 hover:text-brand-ivory transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-ivory focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
-              >
-                Browse gallery →
-              </Link>
             </div>
 
             {/* Slider controls */}
