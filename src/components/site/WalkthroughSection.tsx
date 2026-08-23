@@ -1,17 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
 import walkthroughAsset from "@/assets/walkthrough.mp4.asset.json";
 import walkthroughWebm from "@/assets/walkthrough.webm.asset.json";
 import posterAsset from "@/assets/walkthrough-poster.jpg.asset.json";
 
 const HOTSPOTS = [
-  { label: "Living", time: 4 },
-  { label: "Kitchen", time: 24 },
-  { label: "Cinema", time: 32 },
-  { label: "Bedrooms", time: 40 },
-  { label: "Gym", time: 48 },
+  { label: "Living", slug: "living", time: 4 },
+  { label: "Kitchen", slug: "kitchen", time: 24 },
+  { label: "Cinema", slug: "cinema", time: 32 },
+  { label: "Bedrooms", slug: "bedrooms", time: 40 },
+  { label: "Gym", slug: "gym", time: 48 },
 ];
+
+const SLOW_RATE = 0.6;
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -30,8 +32,16 @@ export function WalkthroughSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [active, setActive] = useState<string | null>(null);
   const reducedMotion = usePrefersReducedMotion();
+  const navigate = useNavigate();
+  const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
+
+  const roomParam = typeof search?.room === "string" ? search.room : null;
+  const tParam = Number(search?.t);
+  const activeSpot = HOTSPOTS.find((h) => h.slug === roomParam) ?? null;
+  const active = activeSpot?.label ?? null;
+  const deepLinkTime = Number.isFinite(tParam) ? tParam : activeSpot?.time ?? null;
+  const appliedTime = useRef<number | null>(null);
 
   // Only attach the source once the section is close to the viewport.
   useEffect(() => {
@@ -45,43 +55,56 @@ export function WalkthroughSection() {
     return () => io.disconnect();
   }, []);
 
-  // Slow, cinematic pace; pause when scrolled away. Reduced motion never autoplays.
+  const startSlowPlay = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.playbackRate = SLOW_RATE;
+    v.play().catch(() => undefined);
+  }, []);
+
+  // Seek to the deep-linked timestamp once the video can accept a seek.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || deepLinkTime == null || reducedMotion) return;
+    if (appliedTime.current === deepLinkTime) return;
+    const apply = () => {
+      appliedTime.current = deepLinkTime;
+      try {
+        v.currentTime = deepLinkTime;
+      } catch {
+        /* metadata not ready yet */
+      }
+      startSlowPlay();
+    };
+    if (v.readyState >= 1) apply();
+    else v.addEventListener("loadedmetadata", apply, { once: true });
+    return () => v.removeEventListener("loadedmetadata", apply);
+  }, [deepLinkTime, reducedMotion, inView, startSlowPlay]);
+
+  // Pause when scrolled away. Reduced motion never autoplays.
   useEffect(() => {
     const v = videoRef.current;
     if (!v || reducedMotion) return;
-    if (!inView) {
-      if (!v.paused) v.pause();
-      return;
-    }
-    v.playbackRate = 0.6;
-    v.play().catch(() => undefined);
+    if (!inView && !v.paused) v.pause();
   }, [inView, reducedMotion]);
 
   const toggle = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) {
-      v.playbackRate = 0.6;
-      v.play().catch(() => undefined);
-    } else {
-      v.pause();
-    }
+    if (v.paused) startSlowPlay();
+    else v.pause();
   };
 
-  const jumpTo = (label: string, time: number) => {
-    const v = videoRef.current;
-    setActive(label);
-    if (!v) return;
-    try {
-      v.currentTime = time;
-    } catch {
-      /* metadata not ready yet */
-    }
-    if (!reducedMotion) {
-      v.playbackRate = 0.6;
-      v.play().catch(() => undefined);
-    }
+  const jumpTo = (slug: string, time: number) => {
+    appliedTime.current = null;
+    navigate({
+      to: ".",
+      search: (prev: Record<string, unknown>) => ({ ...prev, room: slug, t: time }),
+      hash: "walkthrough",
+      replace: true,
+    });
   };
+
 
   return (
     <section ref={sectionRef} className="container-page mt-24">
