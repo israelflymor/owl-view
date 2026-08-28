@@ -41,7 +41,10 @@ export function WalkthroughSection() {
   const activeSpot = HOTSPOTS.find((h) => h.slug === roomParam) ?? null;
   const active = activeSpot?.label ?? null;
   const deepLinkTime = Number.isFinite(tParam) ? tParam : activeSpot?.time ?? null;
-  const appliedTime = useRef<number | null>(null);
+  // Key the seek guard on the full URL state so history navigation re-seeks
+  // even when returning to a room that was visited before.
+  const urlKey = `${roomParam ?? ""}|${deepLinkTime ?? ""}`;
+  const appliedKey = useRef<string | null>(null);
 
   // Only attach the source once the section is close to the viewport.
   useEffect(() => {
@@ -63,12 +66,13 @@ export function WalkthroughSection() {
   }, []);
 
   // Seek to the deep-linked timestamp once the video can accept a seek.
+  // Runs for every URL change, including browser back/forward.
   useEffect(() => {
     const v = videoRef.current;
     if (!v || deepLinkTime == null || reducedMotion) return;
-    if (appliedTime.current === deepLinkTime) return;
+    if (appliedKey.current === urlKey) return;
     const apply = () => {
-      appliedTime.current = deepLinkTime;
+      appliedKey.current = urlKey;
       try {
         v.currentTime = deepLinkTime;
       } catch {
@@ -79,7 +83,7 @@ export function WalkthroughSection() {
     if (v.readyState >= 1) apply();
     else v.addEventListener("loadedmetadata", apply, { once: true });
     return () => v.removeEventListener("loadedmetadata", apply);
-  }, [deepLinkTime, reducedMotion, inView, startSlowPlay]);
+  }, [urlKey, deepLinkTime, reducedMotion, inView, startSlowPlay]);
 
   // Attach + play sources only once the section scrolls near the viewport.
   const loadedRef = useRef(false);
@@ -106,14 +110,29 @@ export function WalkthroughSection() {
   };
 
   const jumpTo = (slug: string, time: number) => {
-    appliedTime.current = null;
+    const isSameRoom = roomParam === slug && deepLinkTime === time;
+    if (isSameRoom) {
+      // Re-clicking the active room replays it without a duplicate history entry.
+      appliedKey.current = null;
+      const v = videoRef.current;
+      if (v && !reducedMotion) {
+        try {
+          v.currentTime = time;
+        } catch {
+          /* metadata not ready yet */
+        }
+        appliedKey.current = urlKey;
+        startSlowPlay();
+      }
+      return;
+    }
     navigate({
       to: ".",
       search: (prev: Record<string, unknown>) => ({ ...prev, room: slug, t: time }),
       hash: "walkthrough",
-      replace: true,
     });
   };
+
 
 
   return (
