@@ -53,7 +53,19 @@ const heroSlides = [
 
 
 
+const WALKTHROUGH_ROOMS = ["living", "kitchen", "cinema", "bedrooms", "gym"] as const;
+const WALKTHROUGH_MAX_TIME = 60;
+
+export type HomeSearch = { room?: (typeof WALKTHROUGH_ROOMS)[number]; t?: number };
+
 export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>): HomeSearch => {
+    const rawRoom = typeof search.room === "string" ? search.room.toLowerCase() : undefined;
+    const room = WALKTHROUGH_ROOMS.find((r) => r === rawRoom);
+    const rawT = Number(search.t);
+    const t = Number.isFinite(rawT) ? Math.min(Math.max(rawT, 0), WALKTHROUGH_MAX_TIME) : undefined;
+    return { ...(room ? { room } : {}), ...(t !== undefined ? { t } : {}) };
+  },
   head: () => ({
     meta: [
       { title: "Owl View — Bespoke Interiors & Building Maintenance in Lagos & Ogun" },
