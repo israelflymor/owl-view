@@ -127,8 +127,8 @@ export function WalkthroughSection() {
       return;
     }
     navigate({
-      to: ".",
-      search: (prev: Record<string, unknown>) => ({ ...prev, room: slug, t: time }),
+      to: "/",
+      search: { room: slug, t: time } as never,
       hash: "walkthrough",
     });
   };
