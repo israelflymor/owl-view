@@ -153,7 +153,7 @@ export function WalkthroughSection() {
           {/* Phone-format walkthrough */}
           <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
             <div className="relative overflow-hidden rounded-[1.75rem] border border-brand-ivory/15 bg-black aspect-[9/16] shadow-2xl">
-              {reducedMotion ? (
+              {!motionOk ? (
                 <img
                   src={posterAsset.url}
                   alt="Interior of a completed Owl View apartment — cove-lit living room with bespoke joinery"
@@ -172,9 +172,9 @@ export function WalkthroughSection() {
                 onPause={() => setPlaying(false)}
                 controls={false}
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
-                className={`absolute inset-0 h-full w-full object-cover ${reducedMotion ? "sr-only" : ""}`}
+                className={`absolute inset-0 h-full w-full object-cover ${motionOk ? "" : "sr-only"}`}
               >
-                {inView && !reducedMotion ? (
+                {inView && motionOk ? (
                   <>
                     <source src={walkthroughWebm.url} type="video/webm" />
                     <source src={walkthroughAsset.url} type="video/mp4" />
@@ -185,25 +185,24 @@ export function WalkthroughSection() {
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-brand-obsidian/80 to-transparent"
                 aria-hidden
               />
-              {!reducedMotion ? (
-                <button
-                  type="button"
-                  onClick={toggle}
-                  aria-pressed={playing}
-                  aria-label={playing ? "Pause walkthrough video" : "Play walkthrough video"}
-                  className="absolute bottom-4 right-4 grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 bg-brand-obsidian/50 backdrop-blur text-brand-ivory hover:bg-brand-obsidian/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
-                >
-                  {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
-                </button>
-              ) : null}
+              <button
+                type="button"
+                onClick={toggle}
+                aria-pressed={playing}
+                aria-label={playing ? "Pause walkthrough video" : "Play walkthrough video"}
+                className="absolute bottom-4 right-4 grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 bg-brand-obsidian/50 backdrop-blur text-brand-ivory hover:bg-brand-obsidian/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              >
+                {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
+              </button>
             </div>
-            {reducedMotion ? (
+            {reducedMotion && !motionOptIn ? (
               <p className="mt-3 text-xs text-brand-ivory/70">
-                Motion is reduced in your system settings, so a still frame is shown instead of the
-                autoplaying tour.
+                Motion is reduced in your system settings, so a still frame is shown. Press play to
+                start the slow tour anyway.
               </p>
             ) : null}
           </div>
+
 
           <div>
             <div className="eyebrow text-brand-gold-soft">Walkthrough · Completed home</div>
