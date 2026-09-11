@@ -33,6 +33,10 @@ export function WalkthroughSection() {
   const [inView, setInView] = useState(false);
   const [playing, setPlaying] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
+  // With reduced motion on, the tour stays a still frame until the visitor
+  // explicitly asks to play it. Everything else stays interactive.
+  const [motionOptIn, setMotionOptIn] = useState(false);
+  const motionOk = !reducedMotion || motionOptIn;
   const navigate = useNavigate();
   const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
 
@@ -45,6 +49,7 @@ export function WalkthroughSection() {
   // even when returning to a room that was visited before.
   const urlKey = `${roomParam ?? ""}|${deepLinkTime ?? ""}`;
   const appliedKey = useRef<string | null>(null);
+
 
   // Only attach the source once the section is close to the viewport.
   useEffect(() => {
@@ -69,7 +74,7 @@ export function WalkthroughSection() {
   // Runs for every URL change, including browser back/forward.
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || deepLinkTime == null || reducedMotion) return;
+    if (!v || deepLinkTime == null || !motionOk) return;
     if (appliedKey.current === urlKey) return;
     const apply = () => {
       appliedKey.current = urlKey;
@@ -83,13 +88,13 @@ export function WalkthroughSection() {
     if (v.readyState >= 1) apply();
     else v.addEventListener("loadedmetadata", apply, { once: true });
     return () => v.removeEventListener("loadedmetadata", apply);
-  }, [urlKey, deepLinkTime, reducedMotion, inView, startSlowPlay]);
+  }, [urlKey, deepLinkTime, motionOk, inView, startSlowPlay]);
 
   // Attach + play sources only once the section scrolls near the viewport.
   const loadedRef = useRef(false);
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || reducedMotion) return;
+    if (!v || !motionOk) return;
     if (!inView) {
       if (!v.paused) v.pause();
       return;
@@ -99,10 +104,15 @@ export function WalkthroughSection() {
       v.load();
     }
     startSlowPlay();
-  }, [inView, reducedMotion, startSlowPlay]);
+  }, [inView, motionOk, startSlowPlay]);
 
 
   const toggle = () => {
+    if (!motionOk) {
+      // Visitor asked for motion despite the system preference: honour it.
+      setMotionOptIn(true);
+      return;
+    }
     const v = videoRef.current;
     if (!v) return;
     if (v.paused) startSlowPlay();
@@ -115,7 +125,7 @@ export function WalkthroughSection() {
       // Re-clicking the active room replays it without a duplicate history entry.
       appliedKey.current = null;
       const v = videoRef.current;
-      if (v && !reducedMotion) {
+      if (v && motionOk) {
         try {
           v.currentTime = time;
         } catch {
@@ -135,6 +145,7 @@ export function WalkthroughSection() {
 
 
 
+
   return (
     <section id="walkthrough" ref={sectionRef} className="container-page mt-24 scroll-mt-24">
       <div className="relative overflow-hidden rounded-3xl bg-brand-obsidian text-brand-ivory">
@@ -142,7 +153,7 @@ export function WalkthroughSection() {
           {/* Phone-format walkthrough */}
           <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
             <div className="relative overflow-hidden rounded-[1.75rem] border border-brand-ivory/15 bg-black aspect-[9/16] shadow-2xl">
-              {reducedMotion ? (
+              {!motionOk ? (
                 <img
                   src={posterAsset.url}
                   alt="Interior of a completed Owl View apartment — cove-lit living room with bespoke joinery"
@@ -161,9 +172,9 @@ export function WalkthroughSection() {
                 onPause={() => setPlaying(false)}
                 controls={false}
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
-                className={`absolute inset-0 h-full w-full object-cover ${reducedMotion ? "sr-only" : ""}`}
+                className={`absolute inset-0 h-full w-full object-cover ${motionOk ? "" : "sr-only"}`}
               >
-                {inView && !reducedMotion ? (
+                {inView && motionOk ? (
                   <>
                     <source src={walkthroughWebm.url} type="video/webm" />
                     <source src={walkthroughAsset.url} type="video/mp4" />
@@ -174,25 +185,24 @@ export function WalkthroughSection() {
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-brand-obsidian/80 to-transparent"
                 aria-hidden
               />
-              {!reducedMotion ? (
-                <button
-                  type="button"
-                  onClick={toggle}
-                  aria-pressed={playing}
-                  aria-label={playing ? "Pause walkthrough video" : "Play walkthrough video"}
-                  className="absolute bottom-4 right-4 grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 bg-brand-obsidian/50 backdrop-blur text-brand-ivory hover:bg-brand-obsidian/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
-                >
-                  {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
-                </button>
-              ) : null}
+              <button
+                type="button"
+                onClick={toggle}
+                aria-pressed={playing}
+                aria-label={playing ? "Pause walkthrough video" : "Play walkthrough video"}
+                className="absolute bottom-4 right-4 grid place-items-center h-11 w-11 rounded-full border border-brand-ivory/30 bg-brand-obsidian/50 backdrop-blur text-brand-ivory hover:bg-brand-obsidian/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              >
+                {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
+              </button>
             </div>
-            {reducedMotion ? (
+            {reducedMotion && !motionOptIn ? (
               <p className="mt-3 text-xs text-brand-ivory/70">
-                Motion is reduced in your system settings, so a still frame is shown instead of the
-                autoplaying tour.
+                Motion is reduced in your system settings, so a still frame is shown. Press play to
+                start the slow tour anyway.
               </p>
             ) : null}
           </div>
+
 
           <div>
             <div className="eyebrow text-brand-gold-soft">Walkthrough · Completed home</div>
@@ -217,7 +227,7 @@ export function WalkthroughSection() {
                       onClick={() => jumpTo(h.slug, h.time)}
                       aria-pressed={isActive}
                       aria-label={`Jump walkthrough to the ${h.label} section`}
-                      disabled={reducedMotion}
+
                       className={`rounded-full border px-4 py-2 text-xs tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian disabled:opacity-40 disabled:cursor-not-allowed ${
                         isActive
                           ? "border-brand-gold bg-brand-gold text-brand-obsidian"
@@ -234,9 +244,8 @@ export function WalkthroughSection() {
               <button
                 type="button"
                 onClick={toggle}
-                disabled={reducedMotion}
                 aria-pressed={playing}
-                className="inline-flex items-center gap-2 rounded-full border border-brand-gold px-6 py-3 text-sm font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-obsidian transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-gold px-6 py-3 text-sm font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-obsidian transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
               >
                 {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
                 {playing ? "Pause slow tour" : "Play slow tour"}
@@ -244,10 +253,13 @@ export function WalkthroughSection() {
             </div>
 
             <p aria-live="polite" className="sr-only">
-              {reducedMotion
-                ? "Reduced motion is on; a still frame is shown instead of the walkthrough."
-                : `${active ? `${active} selected. ` : ""}Walkthrough is ${playing ? "playing" : "paused"}.`}
+              {`${active ? `${active} selected. ` : ""}${
+                motionOk
+                  ? `Walkthrough is ${playing ? "playing" : "paused"}.`
+                  : "Reduced motion is on; a still frame is shown. Press play to start the slow tour."
+              }`}
             </p>
+
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
