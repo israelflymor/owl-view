@@ -206,6 +206,12 @@ export function WalkthroughSection() {
                 preload="none"
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
+                onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                onLoadedMetadata={(e) => {
+                  setDuration(e.currentTarget.duration || 0);
+                  setCurrentTime(e.currentTarget.currentTime);
+                }}
+                onDurationChange={(e) => setDuration(e.currentTarget.duration || 0)}
                 controls={false}
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
                 className={`absolute inset-0 h-full w-full object-cover ${motionOk ? "" : "sr-only"}`}
