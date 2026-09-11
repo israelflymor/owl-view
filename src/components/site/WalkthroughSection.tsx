@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Check, Link2, Pause, Play } from "lucide-react";
 import walkthroughAsset from "@/assets/walkthrough.mp4.asset.json";
 import walkthroughWebm from "@/assets/walkthrough.webm.asset.json";
 import posterAsset from "@/assets/walkthrough-poster.jpg.asset.json";
@@ -14,6 +14,15 @@ const HOTSPOTS = [
 ];
 
 const SLOW_RATE = 0.6;
+// Rooms play in HOTSPOT order; a room is "current" from its timestamp until the
+// next room's timestamp. Tour length is taken from the loaded video duration.
+function roomAt(time: number) {
+  let current = HOTSPOTS[0];
+  for (const h of HOTSPOTS) {
+    if (time >= h.time) current = h;
+  }
+  return current;
+}
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -32,6 +41,9 @@ export function WalkthroughSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   // With reduced motion on, the tour stays a still frame until the visitor
   // explicitly asks to play it. Everything else stays interactive.
@@ -44,6 +56,11 @@ export function WalkthroughSection() {
   const tParam = Number(search?.t);
   const activeSpot = HOTSPOTS.find((h) => h.slug === roomParam) ?? null;
   const active = activeSpot?.label ?? null;
+  // While the tour plays, the currently-shown room is derived from playback
+  // time; an explicit hotspot/deep-link selection wins until playback moves on.
+  const liveSpot = roomAt(currentTime);
+  const currentSlug = playing || currentTime > 0 ? liveSpot.slug : (activeSpot?.slug ?? null);
+  const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
   const deepLinkTime = Number.isFinite(tParam) ? tParam : activeSpot?.time ?? null;
   // Key the seek guard on the full URL state so history navigation re-seeks
   // even when returning to a room that was visited before.
@@ -119,6 +136,25 @@ export function WalkthroughSection() {
     else v.pause();
   };
 
+  const copyRoomLink = async (slug: string, time: number) => {
+    const url = `${window.location.origin}/?room=${slug}&t=${time}#walkthrough`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // Clipboard API unavailable (e.g. insecure context) — fall back.
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopiedSlug(slug);
+    window.setTimeout(() => setCopiedSlug((s) => (s === slug ? null : s)), 2500);
+  };
+
   const jumpTo = (slug: string, time: number) => {
     const isSameRoom = roomParam === slug && deepLinkTime === time;
     if (isSameRoom) {
@@ -170,6 +206,12 @@ export function WalkthroughSection() {
                 preload="none"
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
+                onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                onLoadedMetadata={(e) => {
+                  setDuration(e.currentTarget.duration || 0);
+                  setCurrentTime(e.currentTarget.currentTime);
+                }}
+                onDurationChange={(e) => setDuration(e.currentTarget.duration || 0)}
                 controls={false}
                 aria-label="Walkthrough tour of a completed Owl View apartment interior"
                 className={`absolute inset-0 h-full w-full object-cover ${motionOk ? "" : "sr-only"}`}
@@ -219,15 +261,16 @@ export function WalkthroughSection() {
             </h3>
             <ul aria-labelledby="walkthrough-rooms" className="mt-3 flex flex-wrap gap-2">
               {HOTSPOTS.map((h) => {
-                const isActive = active === h.label;
+                const isActive = currentSlug === h.slug;
+                const isCopied = copiedSlug === h.slug;
                 return (
-                  <li key={h.label}>
+                  <li key={h.label} className="flex items-center gap-1">
                     <button
                       type="button"
                       onClick={() => jumpTo(h.slug, h.time)}
                       aria-pressed={isActive}
                       aria-label={`Jump walkthrough to the ${h.label} section`}
-
+                      aria-current={isActive ? "true" : undefined}
                       className={`rounded-full border px-4 py-2 text-xs tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian disabled:opacity-40 disabled:cursor-not-allowed ${
                         isActive
                           ? "border-brand-gold bg-brand-gold text-brand-obsidian"
@@ -236,10 +279,80 @@ export function WalkthroughSection() {
                     >
                       {h.label}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => copyRoomLink(h.slug, h.time)}
+                      aria-label={isCopied ? `Link to the ${h.label} section copied` : `Copy a shareable link to the ${h.label} section`}
+                      title={`Copy link to ${h.label}`}
+                      className="grid place-items-center h-8 w-8 rounded-full border border-brand-ivory/20 text-brand-ivory/70 hover:border-brand-gold hover:text-brand-gold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
+                    >
+                      {isCopied ? <Check size={13} aria-hidden className="text-brand-gold" /> : <Link2 size={13} aria-hidden />}
+                    </button>
                   </li>
                 );
               })}
             </ul>
+
+            {/* Chapter progress bar — highlights the room currently on screen */}
+            <div className="mt-6" role="group" aria-label="Tour progress by room">
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-brand-ivory/60">
+                <span aria-live="polite">
+                  {currentSlug ? `Now showing: ${HOTSPOTS.find((h) => h.slug === currentSlug)?.label}` : "Tour progress"}
+                </span>
+                {duration > 0 ? (
+                  <span aria-hidden>
+                    {Math.floor(currentTime)}s / {Math.round(duration)}s
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-2 flex gap-1" role="list">
+                {HOTSPOTS.map((h, i) => {
+                  const next = HOTSPOTS[i + 1];
+                  const segStart = h.time;
+                  const segEnd = next ? next.time : duration || h.time + 1;
+                  const segSpan = Math.max(segEnd - segStart, 0.001);
+                  const segFill = Math.min(Math.max((currentTime - segStart) / segSpan, 0), 1);
+                  const isCurrent = currentSlug === h.slug;
+                  const isPast = duration > 0 && currentTime >= segEnd;
+                  return (
+                    <button
+                      key={h.slug}
+                      type="button"
+                      role="listitem"
+                      onClick={() => jumpTo(h.slug, h.time)}
+                      aria-label={`${h.label} — ${isCurrent ? `playing now, ${Math.round(segFill * 100)} percent through this section` : isPast ? "watched" : "not yet watched"}. Jump to this section.`}
+                      className="group relative h-2 flex-1 overflow-hidden rounded-full bg-brand-ivory/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian hover:bg-brand-ivory/25"
+                      style={{ flexGrow: segSpan }}
+                    >
+                      <span
+                        aria-hidden
+                        className={`absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-linear ${
+                          isCurrent ? "bg-brand-gold" : isPast ? "bg-brand-gold/60" : "bg-transparent"
+                        }`}
+                        style={{ width: `${segFill * 100}%` }}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-1.5 flex gap-1" aria-hidden>
+                {HOTSPOTS.map((h, i) => {
+                  const next = HOTSPOTS[i + 1];
+                  const segSpan = Math.max((next ? next.time : duration || h.time + 1) - h.time, 0.001);
+                  return (
+                    <span
+                      key={h.slug}
+                      style={{ flexGrow: segSpan }}
+                      className={`text-[10px] tracking-wide transition-colors ${
+                        currentSlug === h.slug ? "text-brand-gold" : "text-brand-ivory/45"
+                      }`}
+                    >
+                      {h.label}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
             <div className="mt-6">
               <button
                 type="button"
