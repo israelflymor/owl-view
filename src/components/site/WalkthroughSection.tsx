@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Check, Link2, Pause, Play } from "lucide-react";
 import walkthroughAsset from "@/assets/walkthrough.mp4.asset.json";
 import walkthroughWebm from "@/assets/walkthrough.webm.asset.json";
 import posterAsset from "@/assets/walkthrough-poster.jpg.asset.json";
@@ -14,6 +14,15 @@ const HOTSPOTS = [
 ];
 
 const SLOW_RATE = 0.6;
+// Rooms play in HOTSPOT order; a room is "current" from its timestamp until the
+// next room's timestamp. Tour length is taken from the loaded video duration.
+function roomAt(time: number) {
+  let current = HOTSPOTS[0];
+  for (const h of HOTSPOTS) {
+    if (time >= h.time) current = h;
+  }
+  return current;
+}
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -32,6 +41,9 @@ export function WalkthroughSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   // With reduced motion on, the tour stays a still frame until the visitor
   // explicitly asks to play it. Everything else stays interactive.
