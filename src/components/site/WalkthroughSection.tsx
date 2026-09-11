@@ -227,7 +227,7 @@ export function WalkthroughSection() {
                       onClick={() => jumpTo(h.slug, h.time)}
                       aria-pressed={isActive}
                       aria-label={`Jump walkthrough to the ${h.label} section`}
-                      disabled={reducedMotion}
+
                       className={`rounded-full border px-4 py-2 text-xs tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian disabled:opacity-40 disabled:cursor-not-allowed ${
                         isActive
                           ? "border-brand-gold bg-brand-gold text-brand-obsidian"
