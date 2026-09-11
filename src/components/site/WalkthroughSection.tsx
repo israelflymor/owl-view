@@ -74,7 +74,7 @@ export function WalkthroughSection() {
   // Runs for every URL change, including browser back/forward.
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || deepLinkTime == null || reducedMotion) return;
+    if (!v || deepLinkTime == null || !motionOk) return;
     if (appliedKey.current === urlKey) return;
     const apply = () => {
       appliedKey.current = urlKey;
@@ -88,13 +88,13 @@ export function WalkthroughSection() {
     if (v.readyState >= 1) apply();
     else v.addEventListener("loadedmetadata", apply, { once: true });
     return () => v.removeEventListener("loadedmetadata", apply);
-  }, [urlKey, deepLinkTime, reducedMotion, inView, startSlowPlay]);
+  }, [urlKey, deepLinkTime, motionOk, inView, startSlowPlay]);
 
   // Attach + play sources only once the section scrolls near the viewport.
   const loadedRef = useRef(false);
   useEffect(() => {
     const v = videoRef.current;
-    if (!v || reducedMotion) return;
+    if (!v || !motionOk) return;
     if (!inView) {
       if (!v.paused) v.pause();
       return;
@@ -104,10 +104,15 @@ export function WalkthroughSection() {
       v.load();
     }
     startSlowPlay();
-  }, [inView, reducedMotion, startSlowPlay]);
+  }, [inView, motionOk, startSlowPlay]);
 
 
   const toggle = () => {
+    if (!motionOk) {
+      // Visitor asked for motion despite the system preference: honour it.
+      setMotionOptIn(true);
+      return;
+    }
     const v = videoRef.current;
     if (!v) return;
     if (v.paused) startSlowPlay();
@@ -120,7 +125,7 @@ export function WalkthroughSection() {
       // Re-clicking the active room replays it without a duplicate history entry.
       appliedKey.current = null;
       const v = videoRef.current;
-      if (v && !reducedMotion) {
+      if (v && motionOk) {
         try {
           v.currentTime = time;
         } catch {
@@ -137,6 +142,7 @@ export function WalkthroughSection() {
       hash: "walkthrough",
     });
   };
+
 
 
 
