@@ -33,6 +33,10 @@ export function WalkthroughSection() {
   const [inView, setInView] = useState(false);
   const [playing, setPlaying] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
+  // With reduced motion on, the tour stays a still frame until the visitor
+  // explicitly asks to play it. Everything else stays interactive.
+  const [motionOptIn, setMotionOptIn] = useState(false);
+  const motionOk = !reducedMotion || motionOptIn;
   const navigate = useNavigate();
   const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
 
@@ -45,6 +49,7 @@ export function WalkthroughSection() {
   // even when returning to a room that was visited before.
   const urlKey = `${roomParam ?? ""}|${deepLinkTime ?? ""}`;
   const appliedKey = useRef<string | null>(null);
+
 
   // Only attach the source once the section is close to the viewport.
   useEffect(() => {
