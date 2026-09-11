@@ -244,9 +244,8 @@ export function WalkthroughSection() {
               <button
                 type="button"
                 onClick={toggle}
-                disabled={reducedMotion}
                 aria-pressed={playing}
-                className="inline-flex items-center gap-2 rounded-full border border-brand-gold px-6 py-3 text-sm font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-obsidian transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-gold px-6 py-3 text-sm font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-obsidian transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-obsidian"
               >
                 {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
                 {playing ? "Pause slow tour" : "Play slow tour"}
@@ -254,10 +253,13 @@ export function WalkthroughSection() {
             </div>
 
             <p aria-live="polite" className="sr-only">
-              {reducedMotion
-                ? "Reduced motion is on; a still frame is shown instead of the walkthrough."
-                : `${active ? `${active} selected. ` : ""}Walkthrough is ${playing ? "playing" : "paused"}.`}
+              {`${active ? `${active} selected. ` : ""}${
+                motionOk
+                  ? `Walkthrough is ${playing ? "playing" : "paused"}.`
+                  : "Reduced motion is on; a still frame is shown. Press play to start the slow tour."
+              }`}
             </p>
+
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
