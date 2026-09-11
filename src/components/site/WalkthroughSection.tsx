@@ -56,6 +56,11 @@ export function WalkthroughSection() {
   const tParam = Number(search?.t);
   const activeSpot = HOTSPOTS.find((h) => h.slug === roomParam) ?? null;
   const active = activeSpot?.label ?? null;
+  // While the tour plays, the currently-shown room is derived from playback
+  // time; an explicit hotspot/deep-link selection wins until playback moves on.
+  const liveSpot = roomAt(currentTime);
+  const currentSlug = playing || currentTime > 0 ? liveSpot.slug : (activeSpot?.slug ?? null);
+  const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
   const deepLinkTime = Number.isFinite(tParam) ? tParam : activeSpot?.time ?? null;
   // Key the seek guard on the full URL state so history navigation re-seeks
   // even when returning to a room that was visited before.
@@ -129,6 +134,25 @@ export function WalkthroughSection() {
     if (!v) return;
     if (v.paused) startSlowPlay();
     else v.pause();
+  };
+
+  const copyRoomLink = async (slug: string, time: number) => {
+    const url = `${window.location.origin}/?room=${slug}&t=${time}#walkthrough`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // Clipboard API unavailable (e.g. insecure context) — fall back.
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopiedSlug(slug);
+    window.setTimeout(() => setCopiedSlug((s) => (s === slug ? null : s)), 2500);
   };
 
   const jumpTo = (slug: string, time: number) => {
