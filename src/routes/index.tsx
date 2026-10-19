@@ -16,6 +16,7 @@ import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
 import { WalkthroughSection } from "@/components/site/WalkthroughSection";
 import { projects, cardSizes } from "@/config/projects";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 
 
 const heroSlides = [
@@ -311,14 +312,17 @@ function Home() {
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((item, i) => (
-            <Link
+            <article
               key={item.slug}
-              to="/projects/$slug"
-              params={{ slug: item.slug }}
-              aria-label={`View project: ${item.title}, ${item.location}`}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors"
             >
-              <figure className="relative overflow-hidden aspect-[4/3]">
+              <figure className="relative aspect-[4/3]">
+                <BeforeAfter
+                  compact
+                  className="absolute inset-0"
+                  label={`${item.title}, ${item.location}`}
+                  before={item.before}
+                  after={
                 <picture>
                   <source type="image/avif" srcSet={item.image.avif} sizes={cardSizes} />
                   <source type="image/webp" srcSet={item.image.webp} sizes={cardSizes} />
@@ -332,14 +336,22 @@ function Home() {
                     decoding={i === 0 ? "sync" : "async"}
                     width={1200}
                     height={900}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover"
                   />
                 </picture>
-                <figcaption className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
+                  }
+                />
+                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
                   <div className="eyebrow text-brand-gold-soft">{item.location}</div>
                   <div className="text-sm text-brand-ivory/90 mt-0.5">{item.title}</div>
                 </figcaption>
               </figure>
+              <Link
+                to="/projects/$slug"
+                params={{ slug: item.slug }}
+                aria-label={`View project: ${item.title}, ${item.location}`}
+                className="flex flex-1 flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+              >
               <div className="p-6 md:p-7 flex flex-col flex-1">
                 <div className="flex items-baseline justify-between">
                   <span className="eyebrow">0{i + 1}</span>
@@ -354,7 +366,8 @@ function Home() {
                   View project →
                 </span>
               </div>
-            </Link>
+              </Link>
+            </article>
           ))}
         </div>
 
