@@ -16,6 +16,9 @@ import exteriorAvif from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=
 import exteriorWebp from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=webp&as=srcset";
 import exteriorJpg from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=jpg&as=srcset";
 
+import beforeKitchen from "@/assets/before-kitchen-grey.jpg?w=1280&format=webp";
+import beforeWardrobe from "@/assets/before-wardrobe.jpg?w=1280&format=webp";
+import beforeExterior from "@/assets/before-exterior.jpg?w=1280&format=webp";
 import kitchenWhite from "@/assets/real-kitchen-white.jpg";
 import heroKitchen from "@/assets/real-hero-kitchen.jpg";
 import curtains from "@/assets/real-curtains.jpg";
@@ -46,6 +49,8 @@ export interface Project {
   intro: string;
   sections: ProjectSection[];
   image: ProjectImage;
+  /** "Before" photo for the before/after slider. */
+  before: { src: string; alt: string };
   gallery: { src: string; alt: string }[];
 }
 
@@ -80,6 +85,7 @@ export const projects: Project[] = [
         body: "Storage volume increased by roughly a third with no change to the footprint, and the kitchen now carries the whole ground floor visually — delivered on schedule with a single point of contact throughout.",
       },
     ],
+    before: { src: beforeKitchen, alt: "Ikoyi kitchen before renovation: dated cream laminate cabinets and tiled worktops" },
     image: {
       src: kitchenGrey,
       avif: kitchenGreyAvif,
@@ -128,6 +134,7 @@ export const projects: Project[] = [
         body: "Hanging capacity more than doubled, morning routines shortened, and the room now functions as a genuine extension of the master suite rather than dead space.",
       },
     ],
+    before: { src: beforeWardrobe, alt: "Lekki dressing room before fit-out: bare plaster walls and exposed wiring" },
     image: {
       src: wardrobe,
       avif: wardrobeAvif,
@@ -170,6 +177,7 @@ export const projects: Project[] = [
         body: "Handed over with zero outstanding snags at move-in, and the family remains on an ongoing general maintenance arrangement with our team.",
       },
     ],
+    before: { src: beforeExterior, alt: "Abeokuta house during construction: bare blockwork and scaffolding" },
     image: {
       src: exterior,
       avif: exteriorAvif,
