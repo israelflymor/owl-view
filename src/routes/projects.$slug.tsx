@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { ArrowLeft } from "lucide-react";
 import { business } from "@/config/business";
 import { projectBySlug, projects } from "@/config/projects";
@@ -155,6 +156,26 @@ function ProjectDetailPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="container-page mt-16" aria-labelledby="ba-heading">
+        <div className="eyebrow">Transformation</div>
+        <h2 id="ba-heading" className="heading-display text-2xl md:text-3xl text-primary mt-2">
+          Before &amp; after
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">Drag the handle or use your arrow keys to compare.</p>
+        <BeforeAfter
+          className="mt-6 aspect-[4/3] md:aspect-[16/9] rounded-3xl border border-border"
+          label={`${p.title}, ${p.location}`}
+          before={p.before}
+          after={
+            <picture>
+              <source type="image/avif" srcSet={p.image.avif} sizes="100vw" />
+              <source type="image/webp" srcSet={p.image.webp} sizes="100vw" />
+              <img src={p.image.src} srcSet={p.image.jpg} sizes="100vw" alt={p.image.alt} loading="lazy" decoding="async" draggable={false} />
+            </picture>
+          }
+        />
       </section>
 
       <section className="container-page mt-16">
