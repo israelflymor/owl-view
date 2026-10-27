@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Download, ImagePlus, Loader2, Sparkles } from "lucide-react";
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter } from "@/components/site/SiteFooter";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { streamImage } from "@/lib/ai/stream-image";
 import { cn } from "@/lib/utils";
@@ -86,7 +84,6 @@ function MakeoverPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="container-page py-14 md:py-20">
         <div className="max-w-2xl">
           <p className="text-xs tracking-[0.28em] uppercase text-accent">Design studio</p>
@@ -243,7 +240,6 @@ function MakeoverPage() {
           </div>
         </div>
       </main>
-      <SiteFooter />
     </>
   );
 }
