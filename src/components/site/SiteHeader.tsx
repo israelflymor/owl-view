@@ -24,9 +24,13 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between md:h-20">
         <Link to="/" className="flex items-center gap-2.5 group" onClick={() => setOpen(false)}>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
-            <span className="heading-display text-xl leading-none">O</span>
-          </span>
+          <img
+            src={mark}
+            alt="Owl View logo"
+            width={691}
+            height={551}
+            className="h-9 w-auto md:h-10"
+          />
           <span className="flex flex-col leading-none">
             <span className="heading-display text-xl text-primary">{business.name}</span>
             <span className="text-[10px] tracking-[0.28em] uppercase text-muted-foreground mt-0.5">

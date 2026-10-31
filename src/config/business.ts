@@ -10,7 +10,7 @@ export const business = {
   longDescription:
     "Owl View is a Lagos/Ogun-based interior and building maintenance studio. We design, finish, renovate and maintain private homes and commercial spaces — from bespoke kitchens and wardrobes to curtains, blinds, painting and full construction handover.",
   founded: 2018,
-  registrationNumber: "RC: 2580011",
+  registrationNumber: "RC: 1849993",
 
   // Contact — form-only per client preference. Email kept as fallback in footer.
   contact: {

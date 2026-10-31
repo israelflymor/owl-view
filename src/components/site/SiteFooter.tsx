@@ -8,8 +8,14 @@ export function SiteFooter() {
       <div className="container-page py-16 grid gap-12 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-accent text-accent-foreground">
-              <span className="heading-display text-xl leading-none">O</span>
+            <span className="grid place-items-center rounded-full bg-brand-ivory px-2.5 py-2">
+              <img
+                src={mark}
+                alt="Owl View logo"
+                width={691}
+                height={551}
+                className="h-7 w-auto"
+              />
             </span>
             <span className="heading-display text-2xl">{business.name}</span>
           </div>
