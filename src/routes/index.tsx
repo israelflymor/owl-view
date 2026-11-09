@@ -321,6 +321,7 @@ function Home() {
                   compact
                   className="absolute inset-0"
                   label={`${item.title}, ${item.location}`}
+                  sizes={cardSizes}
                   before={item.before}
                   after={item.image}
                 />

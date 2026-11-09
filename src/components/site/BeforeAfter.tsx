@@ -6,6 +6,7 @@ interface Props {
   before: ComparisonImage;
   after: ComparisonImage;
   label: string;
+  sizes?: string;
   className?: string;
   compact?: boolean;
 }
@@ -23,7 +24,7 @@ interface ComparisonImage {
  * divider, so keyboard (arrows, Home/End, PageUp/Down), touch and screen
  * readers work out of the box; pointer drag on the image also moves it.
  */
-export function BeforeAfter({ before, after, label, className, compact }: Props) {
+export function BeforeAfter({ before, after, label, sizes = "100vw", className, compact }: Props) {
   const [pos, setPos] = useState(50);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -45,12 +46,12 @@ export function BeforeAfter({ before, after, label, className, compact }: Props)
       onPointerMove={(e) => e.buttons === 1 && fromPointer(e.clientX)}
     >
       <picture className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
-        <source type="image/avif" srcSet={after.avif} sizes="(min-width: 1024px) 100vw, 100vw" />
-        <source type="image/webp" srcSet={after.webp} sizes="(min-width: 1024px) 100vw, 100vw" />
+        <source type="image/avif" srcSet={after.avif} sizes={sizes} />
+        <source type="image/webp" srcSet={after.webp} sizes={sizes} />
         <img
           src={after.src}
           srcSet={after.jpg}
-          sizes="100vw"
+          sizes={sizes}
           alt={after.alt}
           loading="lazy"
           decoding="async"
@@ -62,12 +63,12 @@ export function BeforeAfter({ before, after, label, className, compact }: Props)
         className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
         style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
       >
-        <source type="image/avif" srcSet={before.avif} sizes="100vw" />
-        <source type="image/webp" srcSet={before.webp} sizes="100vw" />
+        <source type="image/avif" srcSet={before.avif} sizes={sizes} />
+        <source type="image/webp" srcSet={before.webp} sizes={sizes} />
         <img
           src={before.src}
           srcSet={before.jpg}
-          sizes="100vw"
+          sizes={sizes}
           alt={before.alt}
           loading="lazy"
           decoding="async"
