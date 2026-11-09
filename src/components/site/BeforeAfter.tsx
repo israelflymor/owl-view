@@ -3,12 +3,25 @@ import { MoveHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  before: { src: string; alt: string };
-  /** The "after" image element (e.g. a responsive <picture>). */
-  after: ReactNode;
+  before: ComparisonImage;
+  after: ComparisonImage | ReactNode;
   label: string;
+  sizes?: string;
+  priority?: boolean;
   className?: string;
   compact?: boolean;
+}
+
+interface ComparisonImage {
+  src: string;
+  avif?: string;
+  webp?: string;
+  jpg?: string;
+  alt: string;
+}
+
+function isComparisonImage(value: ComparisonImage | ReactNode): value is ComparisonImage {
+  return typeof value === "object" && value !== null && "src" in value;
 }
 
 /**
@@ -16,7 +29,7 @@ interface Props {
  * divider, so keyboard (arrows, Home/End, PageUp/Down), touch and screen
  * readers work out of the box; pointer drag on the image also moves it.
  */
-export function BeforeAfter({ before, after, label, className, compact }: Props) {
+export function BeforeAfter({ before, after, label, sizes = "100vw", priority = false, className, compact }: Props) {
   const [pos, setPos] = useState(50);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -37,16 +50,43 @@ export function BeforeAfter({ before, after, label, className, compact }: Props)
       }}
       onPointerMove={(e) => e.buttons === 1 && fromPointer(e.clientX)}
     >
-      <div className="absolute inset-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover">{after}</div>
-      <img
-        src={before.src}
-        alt={before.alt}
-        loading="lazy"
-        decoding="async"
-        draggable={false}
-        className="absolute inset-0 w-full h-full object-cover"
+      <div className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+        {isComparisonImage(after) ? (
+          <picture className="absolute inset-0">
+            {after.avif && <source type="image/avif" srcSet={after.avif} sizes={sizes} />}
+            {after.webp && <source type="image/webp" srcSet={after.webp} sizes={sizes} />}
+            <img
+              src={after.src}
+              srcSet={after.jpg}
+              sizes={sizes}
+              alt={after.alt}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </picture>
+        ) : after}
+      </div>
+      <picture
+        className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
         style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
-      />
+      >
+        {before.avif && <source type="image/avif" srcSet={before.avif} sizes={sizes} />}
+        {before.webp && <source type="image/webp" srcSet={before.webp} sizes={sizes} />}
+        <img
+          src={before.src}
+          srcSet={before.jpg}
+          sizes={sizes}
+          alt={before.alt}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </picture>
 
       <span className="absolute top-3 left-3 rounded-full bg-brand-obsidian/70 px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-brand-ivory">
         Before

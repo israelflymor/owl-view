@@ -321,31 +321,19 @@ function Home() {
                   compact
                   className="absolute inset-0"
                   label={`${item.title}, ${item.location}`}
+                  sizes={cardSizes}
+                  priority={i === 0}
                   before={item.before}
-                  after={
-                <picture>
-                  <source type="image/avif" srcSet={item.image.avif} sizes={cardSizes} />
-                  <source type="image/webp" srcSet={item.image.webp} sizes={cardSizes} />
-                  <img
-                    src={item.image.src}
-                    srcSet={item.image.jpg}
-                    sizes={cardSizes}
-                    alt={item.image.alt}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    fetchPriority={i === 0 ? "high" : "low"}
-                    decoding={i === 0 ? "sync" : "async"}
-                    width={1200}
-                    height={900}
-                    className="w-full h-full object-cover"
-                  />
-                </picture>
-                  }
+                  after={item.image}
                 />
                 <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
                   <div className="eyebrow text-brand-gold-soft">{item.location}</div>
                   <div className="text-sm text-brand-ivory/90 mt-0.5">{item.title}</div>
                 </figcaption>
               </figure>
+              <p className="px-6 pt-4 text-sm leading-relaxed text-muted-foreground md:px-7">
+                {item.comparisonCaption}
+              </p>
               <Link
                 to="/projects/$slug"
                 params={{ slug: item.slug }}

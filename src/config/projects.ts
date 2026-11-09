@@ -16,9 +16,18 @@ import exteriorAvif from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=
 import exteriorWebp from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=webp&as=srcset";
 import exteriorJpg from "@/assets/real-exterior.jpg?w=480;768;1024;1280&format=jpg&as=srcset";
 
-import beforeKitchen from "@/assets/before-kitchen-grey.jpg?w=1280&format=webp";
-import beforeWardrobe from "@/assets/before-wardrobe.jpg?w=1280&format=webp";
-import beforeExterior from "@/assets/before-exterior.jpg?w=1280&format=webp";
+import beforeKitchen from "@/assets/before-kitchen-grey.jpg";
+import beforeKitchenAvif from "@/assets/before-kitchen-grey.jpg?w=480;768;1024;1280&format=avif&as=srcset";
+import beforeKitchenWebp from "@/assets/before-kitchen-grey.jpg?w=480;768;1024;1280&format=webp&as=srcset";
+import beforeKitchenJpg from "@/assets/before-kitchen-grey.jpg?w=480;768;1024;1280&format=jpg&as=srcset";
+import beforeWardrobe from "@/assets/before-wardrobe.jpg";
+import beforeWardrobeAvif from "@/assets/before-wardrobe.jpg?w=480;768;1024;1280&format=avif&as=srcset";
+import beforeWardrobeWebp from "@/assets/before-wardrobe.jpg?w=480;768;1024;1280&format=webp&as=srcset";
+import beforeWardrobeJpg from "@/assets/before-wardrobe.jpg?w=480;768;1024;1280&format=jpg&as=srcset";
+import beforeExterior from "@/assets/before-exterior.jpg";
+import beforeExteriorAvif from "@/assets/before-exterior.jpg?w=480;768;1024;1280&format=avif&as=srcset";
+import beforeExteriorWebp from "@/assets/before-exterior.jpg?w=480;768;1024;1280&format=webp&as=srcset";
+import beforeExteriorJpg from "@/assets/before-exterior.jpg?w=480;768;1024;1280&format=jpg&as=srcset";
 import kitchenWhite from "@/assets/real-kitchen-white.jpg";
 import heroKitchen from "@/assets/real-hero-kitchen.jpg";
 import curtains from "@/assets/real-curtains.jpg";
@@ -49,8 +58,10 @@ export interface Project {
   intro: string;
   sections: ProjectSection[];
   image: ProjectImage;
-  /** "Before" photo for the before/after slider. */
-  before: { src: string; alt: string };
+  /** Project-specific summary shown beside each before/after comparison. */
+  comparisonCaption: string;
+  /** Responsive "before" photo for the before/after slider. */
+  before: ProjectImage;
   gallery: { src: string; alt: string }[];
 }
 
@@ -85,7 +96,15 @@ export const projects: Project[] = [
         body: "Storage volume increased by roughly a third with no change to the footprint, and the kitchen now carries the whole ground floor visually — delivered on schedule with a single point of contact throughout.",
       },
     ],
-    before: { src: beforeKitchen, alt: "Ikoyi kitchen before renovation: dated cream laminate cabinets and tiled worktops" },
+    comparisonCaption:
+      "Dated cream laminate and cramped worktops replaced with bespoke graphite joinery, stone surfaces, and integrated warm lighting.",
+    before: {
+      src: beforeKitchen,
+      avif: beforeKitchenAvif,
+      webp: beforeKitchenWebp,
+      jpg: beforeKitchenJpg,
+      alt: "Ikoyi kitchen before renovation: dated cream laminate cabinets and tiled worktops",
+    },
     image: {
       src: kitchenGrey,
       avif: kitchenGreyAvif,
@@ -134,7 +153,15 @@ export const projects: Project[] = [
         body: "Hanging capacity more than doubled, morning routines shortened, and the room now functions as a genuine extension of the master suite rather than dead space.",
       },
     ],
-    before: { src: beforeWardrobe, alt: "Lekki dressing room before fit-out: bare plaster walls and exposed wiring" },
+    comparisonCaption:
+      "Bare plaster and raw conduits fitted out into floor-to-ceiling walk-in wardrobes with dedicated shoe and accessory storage.",
+    before: {
+      src: beforeWardrobe,
+      avif: beforeWardrobeAvif,
+      webp: beforeWardrobeWebp,
+      jpg: beforeWardrobeJpg,
+      alt: "Lekki dressing room before fit-out: bare plaster walls and exposed wiring",
+    },
     image: {
       src: wardrobe,
       avif: wardrobeAvif,
@@ -177,7 +204,15 @@ export const projects: Project[] = [
         body: "Handed over with zero outstanding snags at move-in, and the family remains on an ongoing general maintenance arrangement with our team.",
       },
     ],
-    before: { src: beforeExterior, alt: "Abeokuta house during construction: bare blockwork and scaffolding" },
+    comparisonCaption:
+      "Unfinished structural blockwork completed with weather-resistant exterior rendering, perimeter drainage, and full handover finishing.",
+    before: {
+      src: beforeExterior,
+      avif: beforeExteriorAvif,
+      webp: beforeExteriorWebp,
+      jpg: beforeExteriorJpg,
+      alt: "Abeokuta house during construction: bare blockwork and scaffolding",
+    },
     image: {
       src: exterior,
       avif: exteriorAvif,
