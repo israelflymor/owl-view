@@ -1,14 +1,21 @@
-import { useId, useRef, useState, type ReactNode } from "react";
+import { useId, useRef, useState } from "react";
 import { MoveHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  before: { src: string; alt: string };
-  /** The "after" image element (e.g. a responsive <picture>). */
-  after: ReactNode;
+  before: ComparisonImage;
+  after: ComparisonImage;
   label: string;
   className?: string;
   compact?: boolean;
+}
+
+interface ComparisonImage {
+  src: string;
+  avif: string;
+  webp: string;
+  jpg: string;
+  alt: string;
 }
 
 /**
@@ -37,16 +44,37 @@ export function BeforeAfter({ before, after, label, className, compact }: Props)
       }}
       onPointerMove={(e) => e.buttons === 1 && fromPointer(e.clientX)}
     >
-      <div className="absolute inset-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover">{after}</div>
-      <img
-        src={before.src}
-        alt={before.alt}
-        loading="lazy"
-        decoding="async"
-        draggable={false}
-        className="absolute inset-0 w-full h-full object-cover"
+      <picture className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+        <source type="image/avif" srcSet={after.avif} sizes="(min-width: 1024px) 100vw, 100vw" />
+        <source type="image/webp" srcSet={after.webp} sizes="(min-width: 1024px) 100vw, 100vw" />
+        <img
+          src={after.src}
+          srcSet={after.jpg}
+          sizes="100vw"
+          alt={after.alt}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </picture>
+      <picture
+        className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
         style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
-      />
+      >
+        <source type="image/avif" srcSet={before.avif} sizes="100vw" />
+        <source type="image/webp" srcSet={before.webp} sizes="100vw" />
+        <img
+          src={before.src}
+          srcSet={before.jpg}
+          sizes="100vw"
+          alt={before.alt}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </picture>
 
       <span className="absolute top-3 left-3 rounded-full bg-brand-obsidian/70 px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-brand-ivory">
         Before

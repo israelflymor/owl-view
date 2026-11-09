@@ -168,14 +168,11 @@ function ProjectDetailPage() {
           className="mt-6 aspect-[4/3] md:aspect-[16/9] rounded-3xl border border-border"
           label={`${p.title}, ${p.location}`}
           before={p.before}
-          after={
-            <picture>
-              <source type="image/avif" srcSet={p.image.avif} sizes="100vw" />
-              <source type="image/webp" srcSet={p.image.webp} sizes="100vw" />
-              <img src={p.image.src} srcSet={p.image.jpg} sizes="100vw" alt={p.image.alt} loading="lazy" decoding="async" draggable={false} />
-            </picture>
-          }
+          after={p.image}
         />
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          {p.comparisonCaption}
+        </p>
       </section>
 
       <section className="container-page mt-16">
