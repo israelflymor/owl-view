@@ -7,6 +7,7 @@ interface Props {
   after: ComparisonImage | ReactNode;
   label: string;
   sizes?: string;
+  priority?: boolean;
   className?: string;
   compact?: boolean;
 }
@@ -28,7 +29,7 @@ function isComparisonImage(value: ComparisonImage | ReactNode): value is Compari
  * divider, so keyboard (arrows, Home/End, PageUp/Down), touch and screen
  * readers work out of the box; pointer drag on the image also moves it.
  */
-export function BeforeAfter({ before, after, label, sizes = "100vw", className, compact }: Props) {
+export function BeforeAfter({ before, after, label, sizes = "100vw", priority = false, className, compact }: Props) {
   const [pos, setPos] = useState(50);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -59,7 +60,8 @@ export function BeforeAfter({ before, after, label, sizes = "100vw", className, 
               srcSet={after.jpg}
               sizes={sizes}
               alt={after.alt}
-              loading="lazy"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
               decoding="async"
               draggable={false}
               className="absolute inset-0 h-full w-full object-cover"
@@ -78,7 +80,8 @@ export function BeforeAfter({ before, after, label, sizes = "100vw", className, 
           srcSet={before.jpg}
           sizes={sizes}
           alt={before.alt}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           decoding="async"
           draggable={false}
           className="absolute inset-0 h-full w-full object-cover"

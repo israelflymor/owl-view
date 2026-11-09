@@ -322,6 +322,7 @@ function Home() {
                   className="absolute inset-0"
                   label={`${item.title}, ${item.location}`}
                   sizes={cardSizes}
+                  priority={i === 0}
                   before={item.before}
                   after={item.image}
                 />
