@@ -1,10 +1,10 @@
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { MoveHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
   before: ComparisonImage;
-  after: ComparisonImage;
+  after: ComparisonImage | ReactNode;
   label: string;
   sizes?: string;
   className?: string;
@@ -13,10 +13,14 @@ interface Props {
 
 interface ComparisonImage {
   src: string;
-  avif: string;
-  webp: string;
-  jpg: string;
+  avif?: string;
+  webp?: string;
+  jpg?: string;
   alt: string;
+}
+
+function isComparisonImage(value: ComparisonImage | ReactNode): value is ComparisonImage {
+  return typeof value === "object" && value !== null && "src" in value;
 }
 
 /**
@@ -45,26 +49,30 @@ export function BeforeAfter({ before, after, label, sizes = "100vw", className, 
       }}
       onPointerMove={(e) => e.buttons === 1 && fromPointer(e.clientX)}
     >
-      <picture className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
-        <source type="image/avif" srcSet={after.avif} sizes={sizes} />
-        <source type="image/webp" srcSet={after.webp} sizes={sizes} />
-        <img
-          src={after.src}
-          srcSet={after.jpg}
-          sizes={sizes}
-          alt={after.alt}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+      <div className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+        {isComparisonImage(after) ? (
+          <picture className="absolute inset-0">
+            {after.avif && <source type="image/avif" srcSet={after.avif} sizes={sizes} />}
+            {after.webp && <source type="image/webp" srcSet={after.webp} sizes={sizes} />}
+            <img
+              src={after.src}
+              srcSet={after.jpg}
+              sizes={sizes}
+              alt={after.alt}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </picture>
+        ) : after}
       </picture>
       <picture
         className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
         style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
       >
-        <source type="image/avif" srcSet={before.avif} sizes={sizes} />
-        <source type="image/webp" srcSet={before.webp} sizes={sizes} />
+        {before.avif && <source type="image/avif" srcSet={before.avif} sizes={sizes} />}
+        {before.webp && <source type="image/webp" srcSet={before.webp} sizes={sizes} />}
         <img
           src={before.src}
           srcSet={before.jpg}
