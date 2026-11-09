@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { business } from "@/config/business";
+import mark from "@/assets/owl-view-mark.png";
 
 const nav = [
   { to: "/", label: "Home" },

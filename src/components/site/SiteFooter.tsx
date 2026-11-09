@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { business } from "@/config/business";
+import mark from "@/assets/owl-view-mark.png";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
