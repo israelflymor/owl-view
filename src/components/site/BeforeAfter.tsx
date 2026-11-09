@@ -66,7 +66,7 @@ export function BeforeAfter({ before, after, label, sizes = "100vw", className, 
             />
           </picture>
         ) : after}
-      </picture>
+      </div>
       <picture
         className="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover"
         style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
