@@ -7,8 +7,8 @@ import mark from "@/assets/owl-view-mark.png";
 const nav = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
+  { to: "/services", label: "Services" },
   { to: "/projects", label: "Projects" },
-  { to: "/makeover", label: "AI Makeover" },
 ] as const;
 
 export function SiteHeader() {
