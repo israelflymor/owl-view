@@ -9,10 +9,6 @@ import heroKitchenLux from "@/assets/hero-slide-2.jpg";
 import heroKitchenAvif from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=avif&as=srcset";
 import heroKitchenWebp from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=webp&as=srcset";
 import heroKitchenJpg from "@/assets/hero-slide-2.jpg?w=640;960;1280;1600;1920&format=jpg&as=srcset";
-import projWardrobe from "@/assets/real-wardrobe.jpg";
-import projKitchenWhite from "@/assets/real-kitchen-white.jpg";
-import projKitchenGrey from "@/assets/real-kitchen-grey.jpg";
-import projExterior from "@/assets/real-exterior.jpg";
 import { business } from "@/config/business";
 import { WalkthroughSection } from "@/components/site/WalkthroughSection";
 import { projects, cardSizes } from "@/config/projects";
@@ -77,7 +73,9 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "Owl View — Bespoke Interiors & Building Maintenance" },
       { property: "og:description", content: "Coastal-luxury interiors and renovation across Lagos & Ogun State." },
-      { property: "og:url", content: "/" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "canonical", href: "/" },
@@ -303,15 +301,12 @@ function Home() {
               One studio for design, build and everything after.
             </h2>
           </div>
-          <Link
-            to="/projects"
-            className="text-sm font-medium text-primary hover:text-accent underline underline-offset-4"
-          >
-            All projects →
+          <Link to="/services" className="text-sm font-medium text-primary hover:text-accent underline underline-offset-4">
+            Explore our services →
           </Link>
         </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((item, i) => (
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {projects.slice(0, 2).map((item, i) => (
             <article
               key={item.slug}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors"
@@ -331,9 +326,6 @@ function Home() {
                   <div className="text-sm text-brand-ivory/90 mt-0.5">{item.title}</div>
                 </figcaption>
               </figure>
-              <p className="px-6 pt-4 text-sm leading-relaxed text-muted-foreground md:px-7">
-                {item.comparisonCaption}
-              </p>
               <Link
                 to="/projects/$slug"
                 params={{ slug: item.slug }}
@@ -364,37 +356,6 @@ function Home() {
 
       {/* Walkthrough video */}
       <WalkthroughSection />
-
-      {/* Portfolio preview */}
-      <section className="container-page mt-24">
-        <div className="eyebrow">Selected work</div>
-        <h2 className="heading-display text-4xl md:text-5xl mt-3 text-primary max-w-2xl">
-          A quiet confidence in every finish.
-        </h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-6">
-          {[
-            { src: projWardrobe, title: "Walk-in wardrobe joinery", tag: "Lekki", span: "md:col-span-3" },
-            { src: projKitchenGrey, title: "Graphite & stone kitchen", tag: "Ikoyi", span: "md:col-span-3" },
-            { src: projKitchenWhite, title: "Cove-lit family kitchen", tag: "Magodo", span: "md:col-span-4" },
-            { src: projExterior, title: "Construction to finish", tag: "Abeokuta", span: "md:col-span-2" },
-          ].map((p) => (
-            <figure key={p.title} className={`relative overflow-hidden rounded-2xl ${p.span}`}>
-              <img
-                src={p.src}
-                alt={p.title}
-                loading="lazy"
-                width={1200}
-                height={900}
-                className="w-full h-72 md:h-96 object-cover transition-transform duration-700 hover:scale-105"
-              />
-              <figcaption className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-brand-obsidian/80 to-transparent">
-                <div className="eyebrow text-brand-gold-soft">{p.tag}</div>
-                <div className="heading-display text-xl text-brand-ivory mt-1">{p.title}</div>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
 
       {/* Testimonials */}
       <section className="container-page mt-24">

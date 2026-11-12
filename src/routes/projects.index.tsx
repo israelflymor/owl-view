@@ -1,51 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { business } from "@/config/business";
-import { projectByServiceSlug } from "@/config/projects";
-import kitchenHero from "@/assets/real-hero-kitchen.jpg";
-import kitchenWhite from "@/assets/real-kitchen-white.jpg";
-import kitchenGrey from "@/assets/real-kitchen-grey.jpg";
-import wardrobe from "@/assets/real-wardrobe.jpg";
-import curtains from "@/assets/real-curtains.jpg";
-import blinds from "@/assets/real-blinds.jpg";
-import exterior from "@/assets/real-exterior.jpg";
-
-const imageBySlug: Record<string, string> = {
-  "interior-design": kitchenHero,
-  "kitchens-wardrobes": wardrobe,
-  "curtains-blinds": curtains,
-  "painting-finishing": kitchenWhite,
-  "renovation": kitchenGrey,
-  "construction-maintenance": exterior,
-};
-
-const extraImageBySlug: Record<string, string> = {
-  "curtains-blinds": blinds,
-};
+import { ArrowUpRight } from "lucide-react";
+import { projects } from "@/config/projects";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({
     meta: [
-      { title: "Projects — Owl View Service Lines" },
+      { title: "Projects — Owl View | Selected Work" },
       {
         name: "description",
-        content:
-          "Explore Owl View's project categories: interior design, kitchens, wardrobes, curtains, blinds, painting, renovation and construction across Lagos & Ogun State.",
+        content: "Explore completed Owl View case studies in bespoke kitchens, wardrobe joinery and construction across Lagos and Ogun State.",
       },
-      { property: "og:title", content: "Projects — Owl View" },
-      { property: "og:description", content: "Every service line, with recent work." },
-      { property: "og:url", content: "/projects" },
+      { property: "og:title", content: "Projects — Owl View | Selected Work" },
+      { property: "og:description", content: "Completed interiors, joinery and construction case studies from Owl View." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/projects" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/projects" }],
+    links: [{ rel: "canonical", href: "https://owl-view.lovable.app/projects" }],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ItemList",
-          itemListElement: business.services.map((s, i) => ({
+          itemListElement: projects.map((project, i) => ({
             "@type": "ListItem",
             position: i + 1,
-            item: { "@type": "Service", name: s.title, description: s.summary },
+            item: { "@type": "CreativeWork", name: project.title, description: project.intro },
           })),
         }),
       },
@@ -58,89 +39,70 @@ function ProjectsPage() {
   return (
     <>
       <section className="container-page pt-16 md:pt-24">
-        <div className="eyebrow">Projects</div>
+        <div className="eyebrow">Selected work · Lagos &amp; Ogun</div>
         <h1 className="heading-display text-5xl md:text-7xl mt-4 text-primary max-w-4xl">
-          Every service line, delivered end to end.
+          Considered spaces. Carefully finished.
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-          Below are the six project categories Owl View delivers. Each is handled by our in-house
-          team with a single point of contact — from first sketch to final snag.
+          A closer look at completed Owl View projects, from bespoke joinery and interior design to construction and finishing.
         </p>
+        <Link to="/services" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary underline underline-offset-4 hover:text-accent">
+          Explore all six services <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
       </section>
 
-      <section className="container-page mt-14 md:mt-20">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {business.services.map((s, i) => {
-            const featured = projectByServiceSlug(s.slug);
-            return (
-            <article
-              key={s.slug}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card hover:border-accent/60 transition-colors"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={imageBySlug[s.slug]}
-                  alt={s.title}
-                  loading="lazy"
-                  width={800}
-                  height={600}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                {extraImageBySlug[s.slug] && (
+      <section className="container-page mt-14 md:mt-20 mb-20">
+        <div className="grid gap-12 md:grid-cols-2">
+          {projects.map((project, index) => (
+            <article key={project.slug} className="group">
+              <Link to="/projects/$slug" params={{ slug: project.slug }} className="block overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                <picture>
+                  <source type="image/avif" srcSet={project.image.avif} sizes="(min-width: 768px) 50vw, 100vw" />
+                  <source type="image/webp" srcSet={project.image.webp} sizes="(min-width: 768px) 50vw, 100vw" />
                   <img
-                    src={extraImageBySlug[s.slug]}
-                    alt=""
-                    aria-hidden
-                    loading="lazy"
-                    className="absolute bottom-3 right-3 h-16 w-20 rounded-md object-cover border-2 border-brand-ivory shadow-lg"
+                    src={project.image.src}
+                    srcSet={project.image.jpg}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    alt={project.image.alt}
+                    width={1280}
+                    height={853}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    decoding="async"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                   />
-                )}
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <div className="flex items-baseline justify-between">
-                  <span className="eyebrow">0{i + 1}</span>
-                  <span className="text-xs text-muted-foreground">{s.slug.replace(/-/g, " · ")}</span>
+                </picture>
+              </Link>
+              <div className="mt-5 flex items-start justify-between gap-4">
+                <div>
+                  <div className="eyebrow">{project.serviceTitle} · {project.location}</div>
+                  <h2 className="heading-display mt-2 text-3xl text-primary">{project.title}</h2>
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">{project.intro}</p>
                 </div>
-                <h2 className="heading-display text-2xl mt-4 text-primary">{s.title}</h2>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">
-                  {s.summary}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {featured && (
-                    <Link
-                      to="/projects/$slug"
-                      params={{ slug: featured.slug }}
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                    >
-                      View project
-                    </Link>
-                  )}
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center gap-2 rounded-full border border-primary/30 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    Enquire about {s.title.toLowerCase()}
-                  </Link>
-                </div>
+                <Link
+                  to="/projects/$slug"
+                  params={{ slug: project.slug }}
+                  aria-label={`View project: ${project.title}`}
+                  className="mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border text-primary transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  <ArrowUpRight size={18} aria-hidden="true" />
+                </Link>
               </div>
             </article>
-            );
-          })}
+          ))}
         </div>
       </section>
 
-      <section className="container-page mt-24">
-        <div className="rounded-3xl bg-primary text-primary-foreground p-10 md:p-16 text-center">
-          <div className="eyebrow text-accent">Not sure where to start?</div>
-          <h2 className="heading-display text-4xl md:text-5xl mt-3">
-            Send us the room. We'll send back a plan.
-          </h2>
-          <Link
-            to="/contact"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-medium text-accent-foreground"
-          >
-            Request a quote
-          </Link>
+      <section className="border-y border-border bg-card">
+        <div className="container-page flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="eyebrow">From idea to handover</div>
+            <h2 className="heading-display mt-2 text-3xl text-primary">See what we can do for your space.</h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/services" className="inline-flex items-center gap-2 rounded-full border border-primary/30 px-5 py-3 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground">Browse services</Link>
+            <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Request a quote</Link>
+          </div>
         </div>
       </section>
     </>

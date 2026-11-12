@@ -31,7 +31,9 @@ export function SiteFooter() {
           <ul className="mt-5 space-y-3 text-sm">
             <li><Link to="/" className="hover:text-accent">Home</Link></li>
             <li><Link to="/about" className="hover:text-accent">About</Link></li>
+            <li><Link to="/services" className="hover:text-accent">Services</Link></li>
             <li><Link to="/projects" className="hover:text-accent">Projects</Link></li>
+            <li><Link to="/makeover" className="hover:text-accent">Generate Virtual Room (AI visualizer)</Link></li>
             <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
           </ul>
         </div>

@@ -98,8 +98,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
       { property: "og:description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
       { name: "twitter:description", content: "Coastal-luxury interiors, renovation and building maintenance across Lagos and Ogun State. Kitchens, wardrobes, curtains, painting and construction to finish." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a782eb82-b9ae-457c-9326-3fc9b89bfeac" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a782eb82-b9ae-457c-9326-3fc9b89bfeac" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

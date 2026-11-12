@@ -13,9 +13,11 @@ export const Route = createFileRoute("/contact")({
       },
       { property: "og:title", content: "Contact — Owl View" },
       { property: "og:description", content: "Send a brief. We'll respond within one working day." },
-      { property: "og:url", content: "/contact" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/contact" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://owl-view.lovable.app/contact" }],
   }),
   component: ContactPage,
 });

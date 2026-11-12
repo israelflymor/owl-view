@@ -20,6 +20,7 @@ export const Route = createFileRoute("/makeover")({
         content: "See your Lagos or Ogun space reimagined by Owl View before you renovate.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/makeover" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),

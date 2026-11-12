@@ -12,9 +12,11 @@ export const Route = createFileRoute("/about")({
       },
       { property: "og:title", content: "About — Owl View" },
       { property: "og:description", content: "The studio behind the wow view." },
-      { property: "og:url", content: "/about" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/about" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://owl-view.lovable.app/about" }],
     scripts: [
       {
         type: "application/ld+json",
