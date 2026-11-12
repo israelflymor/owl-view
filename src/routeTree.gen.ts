@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as MakeoverRouteImport } from './routes/makeover'
+import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ApiMakeoverRouteImport } from './routes/api/makeover'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
@@ -36,6 +37,11 @@ const ContactRoute = ContactRouteImport.update({
 const MakeoverRoute = MakeoverRouteImport.update({
   id: '/makeover',
   path: '/makeover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/makeover': typeof MakeoverRoute
+  '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/makeover': typeof ApiMakeoverRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/makeover': typeof MakeoverRoute
+  '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/makeover': typeof ApiMakeoverRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/makeover': typeof MakeoverRoute
+  '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/makeover': typeof ApiMakeoverRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/makeover'
+    | '/services'
     | '/sitemap.xml'
     | '/api/makeover'
     | '/projects/$slug'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/makeover'
+    | '/services'
     | '/sitemap.xml'
     | '/api/makeover'
     | '/projects/$slug'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/makeover'
+    | '/services'
     | '/sitemap.xml'
     | '/api/makeover'
     | '/projects/$slug'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   MakeoverRoute: typeof MakeoverRoute
+  ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiMakeoverRoute: typeof ApiMakeoverRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/makeover'
       fullPath: '/makeover'
       preLoaderRoute: typeof MakeoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   MakeoverRoute: MakeoverRoute,
+  ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiMakeoverRoute: ApiMakeoverRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,

@@ -29,10 +29,10 @@ export const Route = createFileRoute("/projects/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/projects/${p.slug}` },
+        { property: "og:url", content: `https://owl-view.lovable.app/projects/${p.slug}` },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: `/projects/${p.slug}` }],
+      links: [{ rel: "canonical", href: `https://owl-view.lovable.app/projects/${p.slug}` }],
       scripts: [
         {
           type: "application/ld+json",

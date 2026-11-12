@@ -73,7 +73,9 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "Owl View — Bespoke Interiors & Building Maintenance" },
       { property: "og:description", content: "Coastal-luxury interiors and renovation across Lagos & Ogun State." },
-      { property: "og:url", content: "/" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://owl-view.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "canonical", href: "/" },

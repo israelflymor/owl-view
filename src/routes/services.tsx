@@ -86,12 +86,13 @@ function ServicesPage() {
             const project = projectByServiceSlug(service.slug);
             return (
               <article key={service.slug} className="min-w-0">
-                <Link
-                  to={project ? "/projects/$slug" : "/projects"}
-                  params={project ? { slug: project.slug } : undefined}
-                  aria-label={`View work related to ${service.title}`}
-                  className="group relative block overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                >
+                {project ? (
+                  <Link
+                    to="/projects/$slug"
+                    params={{ slug: project.slug }}
+                    aria-label={`View work related to ${service.title}`}
+                    className="group relative block overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
                   <img
                     src={detail.image}
                     alt={detail.alt}
@@ -108,21 +109,42 @@ function ServicesPage() {
                   <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-background/90 text-primary transition-colors group-hover:bg-accent">
                     <ArrowUpRight size={18} aria-hidden="true" />
                   </span>
-                </Link>
+                  </Link>
+                ) : (
+                  <Link
+                    to="/projects"
+                    aria-label={`Browse completed work related to ${service.title}`}
+                    className="group relative block overflow-hidden rounded-xl bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    <img
+                      src={detail.image}
+                      alt={detail.alt}
+                      width={1200}
+                      height={900}
+                      loading={index < 2 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
+                      className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                    />
+                    <span className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-background/90 text-sm text-primary">0{index + 1}</span>
+                    <span className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-background/90 text-primary transition-colors group-hover:bg-accent"><ArrowUpRight size={18} aria-hidden="true" /></span>
+                  </Link>
+                )}
 
                 <div className="mt-5">
                   <h2 className="heading-display text-3xl text-primary">{service.title}</h2>
                   <p className="mt-2 text-xs font-medium uppercase tracking-wider text-accent">{detail.scope}</p>
                   <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">{detail.description}</p>
                   <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-                    <Link
-                      to={project ? "/projects/$slug" : "/projects"}
-                      params={project ? { slug: project.slug } : undefined}
-                      className="inline-flex items-center gap-2 font-medium text-primary underline underline-offset-4 hover:text-accent"
-                    >
-                      {project ? `View ${project.title}` : "Browse completed work"}
-                      <ArrowUpRight size={15} aria-hidden="true" />
-                    </Link>
+                    {project ? (
+                      <Link to="/projects/$slug" params={{ slug: project.slug }} className="inline-flex items-center gap-2 font-medium text-primary underline underline-offset-4 hover:text-accent">
+                        View {project.title} <ArrowUpRight size={15} aria-hidden="true" />
+                      </Link>
+                    ) : (
+                      <Link to="/projects" className="inline-flex items-center gap-2 font-medium text-primary underline underline-offset-4 hover:text-accent">
+                        Browse completed work <ArrowUpRight size={15} aria-hidden="true" />
+                      </Link>
+                    )}
                     <Link to="/contact" className="font-medium text-muted-foreground underline underline-offset-4 hover:text-primary">
                       Get a quote
                     </Link>
