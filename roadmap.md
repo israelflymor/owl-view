@@ -1,0 +1,4 @@
+- [x] Add dedicated six-category Services page with scope, descriptions, portfolio links, and quote links.
+- [x] Update header/footer navigation and sitemap for Services and AI visualizer.
+- [x] Refocus Projects on case studies and reduce homepage featured work to two clean cards.
+- [ ] Verify route rendering, responsive navigation, and preview build health.
